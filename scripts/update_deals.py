@@ -49,6 +49,9 @@ BRANDS = [
     # General retail and marketplaces
     ("Target", "shopping"), ("Walmart", "shopping"), ("Amazon", "shopping"),
     ("eBay", "shopping"), ("Etsy", "shopping"), ("QVC", "shopping"),
+    ("REI", "shopping"), ("Barnes & Noble", "shopping"),
+    ("Dick\'s Sporting Goods", "shopping"), ("Staples", "shopping"),
+    ("Office Depot", "shopping"),
     # Fashion / beauty
     ("Nordstrom", "fashion"), ("Macy's", "fashion"), ("Macy", "fashion"),
     ("Sephora", "fashion"), ("Ulta Beauty", "fashion"), ("Ulta", "fashion"),
@@ -78,6 +81,7 @@ BRANDS = [
     ("Home Depot", "home"), ("Lowe's", "home"), ("Lowe", "home"),
     ("IKEA", "home"), ("Wayfair", "home"), ("Pottery Barn", "home"),
     ("Williams Sonoma", "home"), ("Crate & Barrel", "home"),
+    ("West Elm", "home"), ("HomeGoods", "home"),
     ("Ace Hardware", "home"),
     # Everyday services, fuel, pets
     ("CVS", "services"), ("Walgreens", "services"), ("Petco", "services"),
