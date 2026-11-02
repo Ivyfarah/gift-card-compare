@@ -17,6 +17,9 @@ import logging
 import re
 import sys
 import urllib.request
+import urllib.parse
+from html.parser import HTMLParser
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -224,8 +227,138 @@ def get_feed(name: str, url: str):
     return name, items
 
 
+# CardCash displays secondary-market card listings and an "Up to X% off"
+# rate for each brand. This is a listed maximum, NOT a guaranteed quote
+# for every face value. Actual selection/availability is checked at checkout.
+CARDCASH_BASE = "https://www.cardcash.com/buy-gift-cards/"
+CARDCASH_CATEGORIES = [
+    ("food", "discounted-restaurant-cards/"),
+    ("food", "discounted-coffee-cards/"),
+    ("food", "discounted-food-beverage-cards/"),
+    ("grocery", "discounted-grocery-cards/"),
+    ("shopping", "discounted-stores-cards/"),
+    ("shopping", "discounted-sports-outdoors-cards/"),
+    ("fashion", "discounted-apparel-cards/"),
+    ("fashion", "discounted-health-beauty-cards/"),
+    ("tech", "discounted-electronics-office-supplies-cards/"),
+    ("tech", "discounted-gaming-cards/"),
+    ("travel", "discounted-travel-cards/"),
+    ("entertainment", "discounted-entertainment-cards/"),
+    ("home", "discounted-home-garden-cards/"),
+    ("services", "discounted-gas-auto-cards/"),
+    ("services", "discounted-pets-cards/"),
+]
+CARD_RATE = re.compile(r"\bup\s*to\s*(\d{1,2}(?:\.\d+)?)\s*%\s*off\b", re.I)
+LEFT_RE = re.compile(r"^\s*only\s+\d+\s+left\s+", re.I)
+CARD_PATH_RE = re.compile(r"^/buy-gift-cards/discount-(?!ed-)[a-z0-9-]+-cards/?$", re.I)
+
+
+class CardCashAnchorParser(HTMLParser):
+    """Extract only brand links and displayed rates; no inline JS parsing."""
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.anchor = None
+        self.cards = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag.lower() != "a":
+            return
+        attrs = dict(attrs)
+        href = html.unescape(attrs.get("href") or "")
+        path = urllib.parse.urlparse(urllib.parse.urljoin(CARDCASH_BASE, href)).path
+        if CARD_PATH_RE.match(path):
+            self.anchor = {"href": urllib.parse.urljoin(CARDCASH_BASE, href), "text": []}
+        else:
+            self.anchor = None
+
+    def handle_data(self, value):
+        if self.anchor is not None:
+            self.anchor["text"].append(value)
+
+    def handle_endtag(self, tag):
+        if tag.lower() == "a" and self.anchor is not None:
+            self.cards.append((self.anchor["href"], clean(" ".join(self.anchor["text"]))))
+            self.anchor = None
+
+
+def fetch_cardcash_page(category: str, slug: str):
+    url = urllib.parse.urljoin(CARDCASH_BASE, slug)
+    request = urllib.request.Request(
+        url, headers={
+            "User-Agent": "Mozilla/5.0 (compatible; GiftCardCompare/1.0; personal discount overview)",
+            "Accept": "text/html,application/xhtml+xml",
+        }
+    )
+    with urllib.request.urlopen(request, timeout=18) as response:
+        if urllib.parse.urlparse(response.url).hostname != "www.cardcash.com":
+            raise ValueError("Unexpected CardCash redirect")
+        page = response.read(2_000_000).decode("utf-8", "replace")
+    parser = CardCashAnchorParser()
+    parser.feed(page)
+    found = []
+    for href, label in parser.cards:
+        label = LEFT_RE.sub("", label).strip()
+        match = CARD_RATE.search(label)
+        if not match:
+            continue
+        percent = float(match.group(1))
+        if not (0 < percent <= 70):
+            continue
+        brand = re.sub(r"\s+", " ", label[:match.start()]).strip(" -®™")
+        if not (2 <= len(brand) <= 75) or brand.lower() in ("sale", "deals"):
+            continue
+        known_brand, known_category = category_brand(brand)
+        chosen_category = known_category if known_category != "other" else category
+        # Preserve special restrictions such as "In-Store Only" in the brand.
+        card_id = hashlib.sha256(("cardcash:" + href).encode()).hexdigest()[:16]
+        found.append({
+            "id": card_id,
+            "brand": brand,
+            "category": chosen_category,
+            "title": f"{brand} — CardCash 標示最高 {percent:g}% 折扣（轉售禮品卡）",
+            "source": "CardCash",
+            "source_kind": "resale_listing",
+            "url": href,
+            "published": NOW.isoformat(),
+            "observed_at": NOW.isoformat(),
+            "discount_pct": round(percent, 1),
+            "deal_type": "up_to",
+            "face_value": None,
+            "price": None,
+            "restricted": bool(re.search(r"only|app|trade credit|in.store", brand, re.I)),
+        })
+    if not found:
+        raise ValueError("No brand/discount links found: page blocked or changed layout")
+    return category, slug, found
+
+
+def fetch_cardcash_all():
+    found = {}
+    pages_ok = 0
+    # Never generate fabricated discount rates when a source is blocked.
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        futures = {
+            pool.submit(fetch_cardcash_page, cat, slug): slug
+            for cat, slug in CARDCASH_CATEGORIES
+        }
+        for future in as_completed(futures):
+            slug = futures[future]
+            try:
+                _, _, listings = future.result()
+                pages_ok += 1
+                for item in listings:
+                    old = found.get(item["id"])
+                    if not old or item["discount_pct"] > old["discount_pct"]:
+                        found[item["id"]] = item
+            except Exception as exc:
+                logging.warning("CardCash page %s unavailable: %s", slug, exc)
+    logging.info("CardCash pages: %s/%s, unique live listings: %s",
+                 pages_ok, len(CARDCASH_CATEGORIES), len(found))
+    return found, pages_ok
+
+
 def main():
-    offers = {}
+    offers, cardcash_pages_ok = fetch_cardcash_all()
     ok_sources = []
     errors = []
     for source, url in SOURCES:
@@ -265,7 +398,7 @@ def main():
             deal_id = hashlib.sha256(link.encode()).hexdigest()[:16]
             offer_obj = {
                 "id": deal_id, "brand": brand, "category": category, "title": title[:220],
-                "source": source, "url": link, "published": date.isoformat(),
+                "source": source, "source_kind": "deal_article", "url": link, "published": date.isoformat(),
                 "discount_pct": pct, "deal_type": kind,
                 "face_value": face, "price": price,
                 "restricted": bool(NON_EXACT.search(title + " " + description[:180])),
@@ -273,18 +406,33 @@ def main():
             if deal_id not in offers or offers[deal_id]["published"] < offer_obj["published"]:
                 offers[deal_id] = offer_obj
 
-    output = sorted(offers.values(), key=lambda x: (-x["discount_pct"], x["published"]))
-    status = "ok" if len(ok_sources) == len(SOURCES) else "partial" if ok_sources else "unavailable"
+    output = sorted(
+        offers.values(), key=lambda x: (-x["discount_pct"], x.get("brand", "").lower())
+    )
+    usable_sources = len(ok_sources) + cardcash_pages_ok
+    total_sources = len(SOURCES) + len(CARDCASH_CATEGORIES)
+    status = ("ok" if usable_sources == total_sources else
+              "partial" if usable_sources else "unavailable")
+    counts = {cat: 0 for cat in (
+        "food", "grocery", "shopping", "fashion", "tech",
+        "travel", "entertainment", "home", "services", "other"
+    )}
+    for item in output:
+        counts[item.get("category", "other")] = counts.get(item.get("category", "other"), 0) + 1
     payload = {
-        "generated_at": NOW.isoformat(), "status": status,
-        "source_count": len(ok_sources), "configured_sources": len(SOURCES),
-        "disclaimer": "Public article RSS headlines, not live price or availability verification.",
-        "deals": output[:80],
+        "generated_at": NOW.isoformat(),
+        "status": status,
+        "source_count": usable_sources,
+        "configured_sources": total_sources,
+        "cardcash_pages_ok": cardcash_pages_ok,
+        "category_counts": counts,
+        "disclaimer": "CardCash maxima are real public resale listings, NOT firm checkout prices. Recent articles are unverified. Always confirm card amount, stock, terms and final cost.",
+        "deals": output[:400],
     }
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    logging.info("Sources succeeded: %s/%s; qualified offers: %s; status=%s",
-                 len(ok_sources), len(SOURCES), len(output), status)
+    logging.info("All sources succeeded: %s/%s; listings+headlines: %s; status=%s; categories=%s",
+                 usable_sources, total_sources, len(output), status, counts)
     # Exit success so site can report unavailable instead of keeping old results as fresh.
     return 0
 
