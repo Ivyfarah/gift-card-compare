@@ -1,0 +1,647 @@
+{
+  "updated_at": "2026-11-02",
+  "ranking_method": "人工精選：優先依使用場合、消費普及性、送禮接受度與品牌辨識度排序；不是即時折扣、銷量或官方排行。",
+  "categories": [
+    {
+      "id": "food",
+      "icon": "🍔",
+      "label": "餐飲與外送",
+      "description": "吃飯、咖啡與外送，適合經常消費和小額送禮",
+      "picks": [
+        {
+          "rank": 1,
+          "brand": "Starbucks",
+          "why": "門市多、面額彈性，適合咖啡常客",
+          "aliases": []
+        },
+        {
+          "rank": 2,
+          "brand": "DoorDash",
+          "why": "跨餐廳外送，可用於日常餐飲支出",
+          "aliases": []
+        },
+        {
+          "rank": 3,
+          "brand": "Uber Eats",
+          "why": "餐廳選擇多，適合習慣外送的人",
+          "aliases": []
+        },
+        {
+          "rank": 4,
+          "brand": "Chipotle",
+          "why": "常見速食品牌，適合平日午晚餐",
+          "aliases": []
+        },
+        {
+          "rank": 5,
+          "brand": "Chick-fil-A",
+          "why": "適合喜歡雞肉速食的家庭",
+          "aliases": []
+        },
+        {
+          "rank": 6,
+          "brand": "Panera Bread",
+          "why": "三明治、湯品與咖啡等選擇",
+          "aliases": []
+        },
+        {
+          "rank": 7,
+          "brand": "The Cheesecake Factory",
+          "why": "餐廳聚餐或生日送禮用途",
+          "aliases": []
+        },
+        {
+          "rank": 8,
+          "brand": "Olive Garden",
+          "why": "適合家庭聚餐的美式義大利餐廳",
+          "aliases": []
+        },
+        {
+          "rank": 9,
+          "brand": "Dunkin'",
+          "why": "咖啡與早餐常客適用",
+          "aliases": []
+        },
+        {
+          "rank": 10,
+          "brand": "Domino's",
+          "why": "披薩與家庭外帶餐點",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "grocery",
+      "icon": "🛒",
+      "label": "超市與量販",
+      "description": "買菜、日用品和會員制賣場等高頻剛需",
+      "picks": [
+        {
+          "rank": 1,
+          "brand": "Costco Shop Card",
+          "why": "適合常去 Costco 補貨的家庭",
+          "aliases": [
+            "Costco"
+          ]
+        },
+        {
+          "rank": 2,
+          "brand": "Sam's Club",
+          "why": "適合 Sam's Club 會員購物",
+          "aliases": [
+            "Sam's Club"
+          ]
+        },
+        {
+          "rank": 3,
+          "brand": "Kroger",
+          "why": "美國多地超市集團，日常食材補貨",
+          "aliases": []
+        },
+        {
+          "rank": 4,
+          "brand": "Instacart",
+          "why": "線上下單採買，服務與運費需另計",
+          "aliases": []
+        },
+        {
+          "rank": 5,
+          "brand": "Whole Foods Market",
+          "why": "適合選購生鮮與特色食品",
+          "aliases": [
+            "Whole Foods"
+          ]
+        },
+        {
+          "rank": 6,
+          "brand": "Safeway",
+          "why": "超市採買，依所在地區門市而定",
+          "aliases": []
+        },
+        {
+          "rank": 7,
+          "brand": "Albertsons",
+          "why": "多地區常見超市品牌",
+          "aliases": []
+        },
+        {
+          "rank": 8,
+          "brand": "Publix",
+          "why": "美國東南部超市購物選項",
+          "aliases": []
+        },
+        {
+          "rank": 9,
+          "brand": "Walmart",
+          "why": "也可購買食品與家庭用品",
+          "aliases": []
+        },
+        {
+          "rank": 10,
+          "brand": "Target",
+          "why": "食品、家用品與綜合購物",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "shopping",
+      "icon": "🛍️",
+      "label": "綜合購物",
+      "description": "通用商城與大型零售，是不確定收禮者偏好時的選擇",
+      "picks": [
+        {
+          "rank": 1,
+          "brand": "Amazon",
+          "why": "商品範圍廣，適合各種送禮情境",
+          "aliases": []
+        },
+        {
+          "rank": 2,
+          "brand": "Target",
+          "why": "門市與線上購物選擇廣",
+          "aliases": []
+        },
+        {
+          "rank": 3,
+          "brand": "Walmart",
+          "why": "民生日用品與線上商品多",
+          "aliases": []
+        },
+        {
+          "rank": 4,
+          "brand": "eBay",
+          "why": "適合二手、收藏與多元商品選購",
+          "aliases": []
+        },
+        {
+          "rank": 5,
+          "brand": "Etsy",
+          "why": "手作、客製化與特色小物",
+          "aliases": []
+        },
+        {
+          "rank": 6,
+          "brand": "REI",
+          "why": "露營與戶外運動用品",
+          "aliases": []
+        },
+        {
+          "rank": 7,
+          "brand": "Barnes & Noble",
+          "why": "書籍、文具與閱讀相關禮品",
+          "aliases": []
+        },
+        {
+          "rank": 8,
+          "brand": "Dick's Sporting Goods",
+          "why": "運動用品與鞋服",
+          "aliases": []
+        },
+        {
+          "rank": 9,
+          "brand": "Staples",
+          "why": "文具、辦公設備與學習用品",
+          "aliases": []
+        },
+        {
+          "rank": 10,
+          "brand": "Office Depot",
+          "why": "辦公與學校用品",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "fashion",
+      "icon": "👗",
+      "label": "服飾與美妝",
+      "description": "美妝、服飾與配件，送禮對象較明確時實用",
+      "picks": [
+        {
+          "rank": 1,
+          "brand": "Sephora",
+          "why": "美妝與香水品牌選擇廣",
+          "aliases": []
+        },
+        {
+          "rank": 2,
+          "brand": "Ulta Beauty",
+          "why": "彩妝、護膚、髮品與美容用品",
+          "aliases": [
+            "Ulta"
+          ]
+        },
+        {
+          "rank": 3,
+          "brand": "Nordstrom",
+          "why": "服飾鞋包與多品牌百貨",
+          "aliases": []
+        },
+        {
+          "rank": 4,
+          "brand": "Nike",
+          "why": "運動鞋服愛好者適用",
+          "aliases": []
+        },
+        {
+          "rank": 5,
+          "brand": "Adidas",
+          "why": "運動與休閒服飾",
+          "aliases": []
+        },
+        {
+          "rank": 6,
+          "brand": "Lululemon",
+          "why": "瑜伽與運動服飾",
+          "aliases": []
+        },
+        {
+          "rank": 7,
+          "brand": "Macy's",
+          "why": "百貨服飾、配件與家用品",
+          "aliases": [
+            "Macy"
+          ]
+        },
+        {
+          "rank": 8,
+          "brand": "Gap",
+          "why": "休閒服裝與家庭穿搭",
+          "aliases": []
+        },
+        {
+          "rank": 9,
+          "brand": "Old Navy",
+          "why": "平價服裝與童裝",
+          "aliases": []
+        },
+        {
+          "rank": 10,
+          "brand": "Bath & Body Works",
+          "why": "香氛、沐浴與身體保養",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "tech",
+      "icon": "📱",
+      "label": "電子與遊戲",
+      "description": "科技產品、遊戲平台與數位內容",
+      "picks": [
+        {
+          "rank": 1,
+          "brand": "Apple",
+          "why": "Apple 產品、App 與服務相關購買；依適用條款",
+          "aliases": []
+        },
+        {
+          "rank": 2,
+          "brand": "Best Buy",
+          "why": "電子產品、家電與配件",
+          "aliases": []
+        },
+        {
+          "rank": 3,
+          "brand": "Nintendo eShop",
+          "why": "Nintendo 數位遊戲與內容",
+          "aliases": [
+            "Nintendo"
+          ]
+        },
+        {
+          "rank": 4,
+          "brand": "PlayStation Store",
+          "why": "PlayStation 數位內容",
+          "aliases": [
+            "PlayStation"
+          ]
+        },
+        {
+          "rank": 5,
+          "brand": "Xbox",
+          "why": "Xbox 數位遊戲與內容",
+          "aliases": []
+        },
+        {
+          "rank": 6,
+          "brand": "Steam",
+          "why": "PC 遊戲平台",
+          "aliases": []
+        },
+        {
+          "rank": 7,
+          "brand": "Roblox",
+          "why": "Roblox 遊戲相關儲值",
+          "aliases": []
+        },
+        {
+          "rank": 8,
+          "brand": "GameStop",
+          "why": "遊戲、周邊與相關商品",
+          "aliases": []
+        },
+        {
+          "rank": 9,
+          "brand": "Google Play",
+          "why": "Android App 與數位內容",
+          "aliases": []
+        },
+        {
+          "rank": 10,
+          "brand": "Meta Quest",
+          "why": "VR 遊戲與數位內容",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "travel",
+      "icon": "✈️",
+      "label": "旅遊與交通",
+      "description": "住宿、航空與共乘，請特別留意兌換限制",
+      "picks": [
+        {
+          "rank": 1,
+          "brand": "Airbnb",
+          "why": "住宿與旅行相關預訂，留意地區限制",
+          "aliases": []
+        },
+        {
+          "rank": 2,
+          "brand": "Southwest Airlines",
+          "why": "適合有 Southwest 飛行需求者",
+          "aliases": [
+            "Southwest"
+          ]
+        },
+        {
+          "rank": 3,
+          "brand": "Delta Air Lines",
+          "why": "適合常搭 Delta 航班者",
+          "aliases": [
+            "Delta"
+          ]
+        },
+        {
+          "rank": 4,
+          "brand": "United Airlines",
+          "why": "適合 United 航班旅客",
+          "aliases": []
+        },
+        {
+          "rank": 5,
+          "brand": "American Airlines",
+          "why": "適合 American 航班旅客",
+          "aliases": []
+        },
+        {
+          "rank": 6,
+          "brand": "Uber",
+          "why": "市區共乘與部分其他服務",
+          "aliases": []
+        },
+        {
+          "rank": 7,
+          "brand": "Lyft",
+          "why": "市區共乘交通支出",
+          "aliases": []
+        },
+        {
+          "rank": 8,
+          "brand": "Marriott",
+          "why": "Marriott 集團住宿相關消費",
+          "aliases": []
+        },
+        {
+          "rank": 9,
+          "brand": "Hilton",
+          "why": "Hilton 住宿相關消費",
+          "aliases": []
+        },
+        {
+          "rank": 10,
+          "brand": "Amtrak",
+          "why": "美國鐵路旅行與城際交通",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "entertainment",
+      "icon": "🎬",
+      "label": "娛樂與串流",
+      "description": "影城、訂閱、表演與樂園消費",
+      "picks": [
+        {
+          "rank": 1,
+          "brand": "Disney Gift Card",
+          "why": "Disney 樂園及指定 Disney 消費；不等於 Disney+ 方案",
+          "aliases": [
+            "Disney"
+          ]
+        },
+        {
+          "rank": 2,
+          "brand": "Netflix",
+          "why": "影音串流訂閱相關支出",
+          "aliases": []
+        },
+        {
+          "rank": 3,
+          "brand": "Hulu",
+          "why": "影音串流服務；先確認儲值條款",
+          "aliases": []
+        },
+        {
+          "rank": 4,
+          "brand": "Spotify",
+          "why": "音樂訂閱；留意方案與帳戶限制",
+          "aliases": []
+        },
+        {
+          "rank": 5,
+          "brand": "AMC Theatres",
+          "why": "電影院觀影與指定消費",
+          "aliases": [
+            "AMC"
+          ]
+        },
+        {
+          "rank": 6,
+          "brand": "Regal Cinemas",
+          "why": "影城票券與指定消費",
+          "aliases": [
+            "Regal"
+          ]
+        },
+        {
+          "rank": 7,
+          "brand": "Cinemark",
+          "why": "影城觀影",
+          "aliases": []
+        },
+        {
+          "rank": 8,
+          "brand": "Fandango",
+          "why": "電影票線上訂購",
+          "aliases": []
+        },
+        {
+          "rank": 9,
+          "brand": "Ticketmaster",
+          "why": "演唱會與活動票券",
+          "aliases": []
+        },
+        {
+          "rank": 10,
+          "brand": "StubHub",
+          "why": "二手票券交易平台",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "home",
+      "icon": "🏠",
+      "label": "居家與裝修",
+      "description": "家用品、家具、五金與房屋維護",
+      "picks": [
+        {
+          "rank": 1,
+          "brand": "The Home Depot",
+          "why": "五金、園藝與房屋維修",
+          "aliases": [
+            "Home Depot"
+          ]
+        },
+        {
+          "rank": 2,
+          "brand": "Lowe's",
+          "why": "家居修繕與家電",
+          "aliases": []
+        },
+        {
+          "rank": 3,
+          "brand": "IKEA",
+          "why": "家具、收納與居家用品",
+          "aliases": []
+        },
+        {
+          "rank": 4,
+          "brand": "Wayfair",
+          "why": "家具與居家裝飾",
+          "aliases": []
+        },
+        {
+          "rank": 5,
+          "brand": "Ace Hardware",
+          "why": "五金、工具與日常修繕",
+          "aliases": []
+        },
+        {
+          "rank": 6,
+          "brand": "Pottery Barn",
+          "why": "家具與家飾",
+          "aliases": []
+        },
+        {
+          "rank": 7,
+          "brand": "Williams Sonoma",
+          "why": "廚房用品與家居商品",
+          "aliases": []
+        },
+        {
+          "rank": 8,
+          "brand": "Crate & Barrel",
+          "why": "家具、餐廚與家飾",
+          "aliases": []
+        },
+        {
+          "rank": 9,
+          "brand": "West Elm",
+          "why": "現代風家具與居家裝飾",
+          "aliases": []
+        },
+        {
+          "rank": 10,
+          "brand": "HomeGoods",
+          "why": "家居用品與季節裝飾",
+          "aliases": []
+        }
+      ]
+    },
+    {
+      "id": "services",
+      "icon": "⛽",
+      "label": "生活與汽車",
+      "description": "藥妝、寵物、加油及日常服務",
+      "picks": [
+        {
+          "rank": 1,
+          "brand": "CVS",
+          "why": "個人護理、家庭日用品與部分藥妝",
+          "aliases": []
+        },
+        {
+          "rank": 2,
+          "brand": "Walgreens",
+          "why": "日用品與藥妝",
+          "aliases": []
+        },
+        {
+          "rank": 3,
+          "brand": "Petco",
+          "why": "寵物用品與相關服務",
+          "aliases": []
+        },
+        {
+          "rank": 4,
+          "brand": "PetSmart",
+          "why": "寵物用品與家庭養寵支出",
+          "aliases": []
+        },
+        {
+          "rank": 5,
+          "brand": "Chewy",
+          "why": "線上寵物用品",
+          "aliases": []
+        },
+        {
+          "rank": 6,
+          "brand": "Shell",
+          "why": "加油站消費，留意適用站點",
+          "aliases": []
+        },
+        {
+          "rank": 7,
+          "brand": "Chevron",
+          "why": "加油與指定站內消費",
+          "aliases": []
+        },
+        {
+          "rank": 8,
+          "brand": "ExxonMobil",
+          "why": "加油與指定站內消費",
+          "aliases": [
+            "Exxon",
+            "Mobil"
+          ]
+        },
+        {
+          "rank": 9,
+          "brand": "AutoZone",
+          "why": "汽車保養耗材與配件",
+          "aliases": []
+        },
+        {
+          "rank": 10,
+          "brand": "Massage Envy",
+          "why": "指定按摩與保養服務",
+          "aliases": []
+        }
+      ]
+    }
+  ]
+}
