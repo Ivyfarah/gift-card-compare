@@ -266,8 +266,8 @@ function render(){
     if(filter!=='favorites'&&filter!=='all'&&d.category!==filter)return false;
     return !term||(String(d.brand)+' '+d.title+' '+d.source).toLowerCase().includes(term)
   }).sort(function(a,b){return sortDesc?b.discount_pct-a.discount_pct:a.discount_pct-b.discount_pct});
-  var top=filter==='all'&&!term?selected.slice(0,10):selected;
-  set('resultCount',filter==='all'&&!term?'符合條件 '+all.length+' 筆 · 顯示前 '+top.length+' 筆':'找到 '+top.length+' 筆優惠');
+  var top=!term&&filter!=='favorites'?selected.slice(0,10):selected;
+  set('resultCount',!term&&filter!=='favorites'?'符合條件 '+selected.length+' 筆 · 顯示前 '+top.length+' 筆':'找到 '+top.length+' 筆優惠');
   set('heading',filter==='favorites'?'收藏的折扣':filter==='all'?'近期折扣 Top 10':categoryLabel(filter)+'近期優惠');
   var box=el('deals');box.replaceChildren();
   if(!top.length){var empty=txt('div','', 'empty');var emoji=txt('div',filter==='favorites'?'♡':'🎁');emoji.style.fontSize='32px';empty.appendChild(emoji);empty.appendChild(txt('b',filter==='favorites'?'尚未收藏優惠':!all.length?'目前沒有可顯示的優惠':'沒有符合條件的優惠'));empty.appendChild(txt('p',!all.length?'系統不會用假折扣填滿排行榜。請查看上方的最後更新狀態。':filter==='favorites'?'點選優惠右上角的愛心加入收藏。':'試試其他品牌、分類或清除搜尋。'));box.appendChild(empty);return}
