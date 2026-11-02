@@ -1,0 +1,20 @@
+{
+  "name": "Gift Card Compare",
+  "short_name": "GiftCompare",
+  "description": "美國 Gift Card 折扣比較與每日排行榜",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f6fb",
+  "theme_color": "#10182c",
+  "lang": "zh-Hant",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
