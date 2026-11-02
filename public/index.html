@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#10182c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GiftCompare">
+  <meta name="description" content="美國 Gift Card 折扣追蹤：每日更新公開優惠資訊，按估算折扣排序。">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="apple-touch-icon" href="./icon.svg">
+  <title>Gift Card Compare｜美國禮品卡優惠排行榜</title>
+  <style>
+    :root{--bg:#f4f6fb;--ink:#17213a;--sub:#6a7890;--line:#e5e9f2;--accent:#6258ed;--mint:#e5faf1;--green:#087c59;--rose:#fceaf0}
+    *{box-sizing:border-box}html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Noto Sans TC",sans-serif;color:var(--ink)}
+    a{color:inherit}button,input{font:inherit}
+    button{cursor:pointer} .wrap{max-width:880px;margin:auto;padding:0 18px 92px}
+    .hero{background:linear-gradient(136deg,#0e1b37 0%,#2d235d 57%,#6c43ba 100%);color:white;border-radius:0 0 30px 30px;margin:0 -18px;padding:calc(env(safe-area-inset-top) + 28px) 24px 31px;position:relative;overflow:hidden}
+    .hero:after{content:"";position:absolute;right:-60px;top:90px;width:235px;height:235px;background:radial-gradient(circle,#bc9bf5 0,transparent 67%);opacity:.19;pointer-events:none}
+    .topline{display:flex;align-items:center;gap:9px;font-size:13px;letter-spacing:.03em;color:#d4d0ff;font-weight:700}
+    .mark{width:27px;height:27px;background:linear-gradient(140deg,#af9bff,#7ae9d7);border-radius:9px;display:grid;place-items:center;color:#16204a}
+    h1{font-size:clamp(29px,7vw,39px);line-height:1.19;margin:27px 0 8px;letter-spacing:-.035em}
+    .hero p{color:#c9c9eb;font-size:14px;margin:0;line-height:1.65;max-width:490px}
+    .stats{display:flex;gap:10px;margin-top:28px}
+    .stat{flex:1;min-width:0;background:#ffffff13;border:1px solid #ffffff26;border-radius:16px;padding:12px 11px;backdrop-filter:blur(6px)}
+    .stat small{display:block;color:#d2ccf5;font-size:11px;white-space:nowrap}
+    .stat strong{display:block;font-size:21px;line-height:1.5;letter-spacing:-.04em}
+    .stat strong.small{font-size:13px;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:5px 0}
+    .status{display:flex;align-items:flex-start;gap:10px;margin-top:22px;border-radius:14px;background:white;padding:13px 14px;color:#354056;border:1px solid var(--line);font-size:13px;line-height:1.6}
+    .dot{width:8px;height:8px;flex:none;background:#bd9434;border-radius:50%;margin-top:6px}
+    .dot.good{background:#1caa7b}.dot.bad{background:#d16060}
+    .status strong{display:block}.status small{display:block;color:var(--sub);font-size:11px}
+    .headline{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin:26px 2px 13px}
+    .headline h2{font-size:21px;letter-spacing:-.03em;margin:0}.headline small{display:block;font-size:12px;color:var(--sub);margin-top:4px}
+    .refresh{background:white;border:1px solid var(--line);border-radius:11px;color:#4a5480;padding:9px 11px;white-space:nowrap;font-size:12px;font-weight:700}
+    .search{width:100%;height:48px;padding:0 17px 0 42px;background:white;border:1px solid var(--line);border-radius:14px;color:var(--ink);outline:none;box-shadow:0 5px 25px #16224e06}
+    .search:focus{border-color:#a79eff}.searchbox{position:relative}
+    .searchbox:before{content:"⌕";position:absolute;left:16px;top:6px;color:#8d94a5;font-size:28px}
+    .chips{display:flex;overflow:auto;gap:8px;margin:13px 0 15px;padding-bottom:4px;scrollbar-width:none}
+    .chips::-webkit-scrollbar{display:none}
+    .chip{flex:none;background:#fff;border:1px solid var(--line);border-radius:99px;padding:9px 14px;color:#5a667c;font-size:12px;font-weight:700}
+    .chip.on{background:#2c315b;color:white;border-color:#2c315b}
+    .toolbar{display:flex;justify-content:space-between;align-items:center;margin:0 2px 12px;color:var(--sub);font-size:12px}
+    .sort{background:none;border:0;color:#4b42bc;font-size:12px;font-weight:700;padding:6px}
+    .list{display:flex;flex-direction:column;gap:11px}
+    .deal{background:white;border:1px solid var(--line);border-radius:19px;padding:16px;box-shadow:0 4px 25px #14244a06}
+    .deal-top{display:flex;align-items:center;gap:11px}
+    .rank{width:27px;flex:none;color:#9ba4b4;font-weight:800;font-size:13px}
+    .brandmark{width:44px;height:44px;flex:none;border-radius:14px;background:linear-gradient(130deg,#edf0ff,#e0f6f1);display:grid;place-items:center;color:#5b57b1;font-size:20px;font-weight:800}
+    .brandname{font-weight:800;font-size:16px;line-height:1.3}
+    .source{font-size:11px;color:var(--sub);margin-top:4px}
+    .save{margin-left:auto;background:#f5f6fb;border:0;border-radius:10px;padding:9px 11px;color:#99a0b3;font-size:21px;line-height:1}
+    .save.saved{color:#e65f83;background:#fff0f4}
+    .deal-middle{display:flex;align-items:center;gap:12px;margin:13px 0 10px}
+    .percent{font-size:29px;font-weight:850;letter-spacing:-.05em;color:var(--green);white-space:nowrap}
+    .percent span{font-size:13px;letter-spacing:0;margin-left:3px}
+    .dealtype{display:inline-block;background:var(--mint);color:var(--green);font-size:11px;font-weight:750;padding:6px 9px;border-radius:8px}
+    .price{color:#657188;font-size:12px;margin-left:auto;text-align:right}
+    .deal-title{font-size:13px;line-height:1.56;color:#37435c;margin:0 0 10px}
+    .tags{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+    .tag{font-size:10px;background:#f3f5f9;color:#66758d;border-radius:7px;padding:5px 7px}
+    .deal-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding-top:12px}
+    .deal-bottom small{color:#8a94a7;font-size:11px}
+    .buy{display:inline-flex;gap:6px;align-items:center;justify-content:center;border-radius:10px;background:#5552d8;color:#fff;padding:10px 12px;font-size:12px;text-decoration:none;font-weight:800;white-space:nowrap}
+    .empty{border:1px dashed #d9deea;background:#fff;border-radius:19px;padding:37px 22px;text-align:center;color:#647088}
+    .empty b{display:block;color:#333d56;font-size:16px;margin:12px 0 7px}.empty p{font-size:13px;line-height:1.7;margin:0}
+    .note{margin:26px 0 0;color:#8190a6;font-size:11px;line-height:1.8}
+    .sources{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+    .sources a{padding:8px 10px;border:1px solid var(--line);border-radius:9px;text-decoration:none;background:white;color:#5f6881;font-size:11px}
+    .nav{position:fixed;bottom:0;left:0;right:0;background:#ffffffee;border-top:1px solid var(--line);padding:10px 12px calc(10px + env(safe-area-inset-bottom));display:flex;justify-content:center;backdrop-filter:blur(15px);z-index:10}
+    .nav-inner{display:flex;justify-content:space-around;width:100%;max-width:500px}
+    .nav button{border:0;background:transparent;color:#7b879c;font-size:11px;font-weight:750;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:100px}
+    .nav button.active{color:#504cce}.nav i{font-style:normal;font-size:21px}
+    @media(min-width:680px){.hero{padding-left:46px;padding-right:46px}.wrap{padding:0 30px 100px}.list{display:grid;grid-template-columns:1fr 1fr}.deal{min-width:0}.stats{max-width:520px}.hero{margin:0 -30px}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="topline"><span class="mark">✦</span> GIFT CARD COMPARE <span style="margin-left:auto;font-size:11px">🇺🇸 美國版</span></div>
+    <h1>買禮品卡，<br>先看看哪裡最划算。</h1>
+    <p>每日整理公開優惠資訊，以估算折扣比較。即使沒有足夠優惠，也不會虛構 Top 10。</p>
+    <div class="stats">
+      <div class="stat"><small>可顯示優惠</small><strong id="totalStat">—</strong></div>
+      <div class="stat"><small>最高估算折扣</small><strong id="bestStat">—</strong></div>
+      <div class="stat"><small>最近更新（美西）</small><strong class="small" id="timeStat">待更新</strong></div>
+    </div>
+  </header>
+  <div class="status" role="status"><span class="dot" id="statusDot"></span><div><strong id="statusTitle">正在讀取折扣資料…</strong><span id="statusText">優惠為公開資訊整理，請在購買前確認期限、會員限制與結帳金額。</span></div></div>
+  <div class="headline"><div><h2 id="heading">今日精選 Top 10</h2><small>按估算折扣排序 · 非即時結帳報價</small></div><button class="refresh" id="refresh" type="button">↻ 重新整理</button></div>
+  <div class="searchbox"><input type="search" id="search" class="search" placeholder="搜尋 Uber、Target、Disney、Costco…" aria-label="搜尋優惠"></div>
+  <div class="chips" id="chips">
+    <button class="chip on" data-filter="all">全部優惠</button><button class="chip" data-filter="food">🍔 餐飲</button><button class="chip" data-filter="shopping">🛍️ 購物</button><button class="chip" data-filter="travel">✈️ 旅遊</button><button class="chip" data-filter="entertainment">🎮 娛樂</button><button class="chip" data-filter="favorites">♥ 收藏</button>
+  </div>
+  <div class="toolbar"><span id="resultCount">準備載入…</span><button id="sort" class="sort" type="button">折扣最高 ↓</button></div>
+  <div class="list" id="deals"><div class="empty"><div style="font-size:32px">🎁</div><b>正在整理今日優惠</b><p>如果折扣資料尚未產生，這裡會清楚顯示狀態。</p></div></div>
+  <p class="note">資料來自公開優惠文章與 RSS，並非商家官方庫存或即時價格 API。折扣可能有區域、會員、付款方式、手續費、數量、結束日期等限制；「獎勵／贈卡」估值與現金折扣不同。排名僅限可解析且最近發布的優惠，不能代表全美所有 Gift Card 的最佳價格。本站不銷售或代購禮品卡。</p>
+  <div class="sources"><a href="https://www.doctorofcredit.com/category/gift-card-deals/" target="_blank" rel="noopener noreferrer">Doctor of Credit ↗</a><a href="https://slickdeals.net/" target="_blank" rel="noopener noreferrer">Slickdeals ↗</a></div>
+</div>
+<nav class="nav" aria-label="主選單"><div class="nav-inner"><button type="button" id="homeBtn" class="active"><i>⌂</i>優惠排行榜</button><button type="button" id="favBtn"><i>♡</i>我的收藏</button><button type="button" id="infoBtn"><i>ⓘ</i>使用說明</button></div></nav>
+<script>
+(function(){
+'use strict';
+var data={generated_at:null,deals:[],status:'pending'},filter='all',query='',sortDesc=true;
+var favorites=[];
+try{favorites=JSON.parse(localStorage.getItem('gcc-favorites')||'[]');if(!Array.isArray(favorites))favorites=[]}catch(e){favorites=[]}
+function el(id){return document.getElementById(id)}
+function txt(tag,value,className){var n=document.createElement(tag);n.textContent=value;if(className)n.className=className;return n}
+function set(id,value){el(id).textContent=value}
+function safeUrl(url){try{var u=new URL(url);return ['https:','http:'].includes(u.protocol)?u.href:null}catch(e){return null}}
+function time(value){if(!value)return '尚無資料';var d=new Date(value);return isNaN(+d)?'未知':new Intl.DateTimeFormat('zh-TW',{timeZone:'America/Los_Angeles',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(d)}
+function ageDays(date){return (Date.now()-new Date(date).getTime())/86400000}
+function prettyDate(date){if(!date)return '未標示';var d=new Date(date);return isNaN(+d)?'未知':new Intl.DateTimeFormat('zh-TW',{timeZone:'America/Los_Angeles',month:'numeric',day:'numeric'}).format(d)}
+function render(){
+  var all=Array.isArray(data.deals)?data.deals.filter(function(d){return d&&typeof d.discount_pct==='number'&&d.discount_pct>0&&safeUrl(d.url)}):[];
+  var best=all.reduce(function(n,d){return Math.max(n,d.discount_pct)},0);
+  set('totalStat',String(all.length));set('bestStat',best?best.toFixed(1)+'%':'—');set('timeStat',time(data.generated_at));
+  var fresh=data.generated_at&&ageDays(data.generated_at)<1.6;
+  el('statusDot').className='dot '+(fresh&&data.status==='ok'?'good':data.status==='unavailable'?'bad':'');
+  set('statusTitle',!data.generated_at?'尚未產生每日資料':!fresh?'資料可能已過期':data.status==='partial'?'部分來源暫時無法更新':data.status==='unavailable'?'資料來源暫時不可用':'每日優惠資料已載入');
+  set('statusText',!data.generated_at?'需要先啟用 GitHub Pages 與每日工作流程。': '上次執行：'+time(data.generated_at)+'（美西）。折扣未逐筆驗證，點選原始文章確認是否仍有效。');
+  var term=query.trim().toLowerCase();
+  var selected=all.filter(function(d){
+    if(filter==='favorites'&&!favorites.includes(d.id))return false;
+    if(filter!=='favorites'&&filter!=='all'&&d.category!==filter)return false;
+    return !term||(String(d.brand)+' '+d.title+' '+d.source).toLowerCase().includes(term)
+  }).sort(function(a,b){return sortDesc?b.discount_pct-a.discount_pct:a.discount_pct-b.discount_pct});
+  var top=filter==='all'&&!term?selected.slice(0,10):selected;
+  set('resultCount',filter==='all'&&!term?'符合條件 '+all.length+' 筆 · 顯示前 '+top.length+' 筆':'找到 '+top.length+' 筆優惠');
+  set('heading',filter==='favorites'?'我的收藏':filter==='all'?'今日精選 Top 10':'分類優惠');
+  var box=el('deals');box.replaceChildren();
+  if(!top.length){var empty=txt('div','', 'empty');var emoji=txt('div',filter==='favorites'?'♡':'🎁');emoji.style.fontSize='32px';empty.appendChild(emoji);empty.appendChild(txt('b',filter==='favorites'?'尚未收藏優惠':!all.length?'目前沒有可顯示的優惠':'沒有符合條件的優惠'));empty.appendChild(txt('p',!all.length?'系統不會用假折扣填滿排行榜。請查看上方的最後更新狀態。':filter==='favorites'?'點選優惠右上角的愛心加入收藏。':'試試其他品牌、分類或清除搜尋。'));box.appendChild(empty);return}
+  top.forEach(function(d,i){
+    var card=txt('article','', 'deal');
+    var topRow=txt('div','', 'deal-top');
+    topRow.appendChild(txt('span',String(i+1).padStart(2,'0'),'rank'));
+    var mark=txt('div',(d.brand||'G').slice(0,1).toUpperCase(),'brandmark');
+    topRow.appendChild(mark);
+    var identity=txt('div','');
+    identity.style.minWidth='0';identity.appendChild(txt('div',d.brand||'禮品卡','brandname'));identity.appendChild(txt('div',(d.source||'公開來源')+' · '+prettyDate(d.published),'source'));
+    topRow.appendChild(identity);
+    var save=txt('button',favorites.includes(d.id)?'♥':'♡','save'+(favorites.includes(d.id)?' saved':''));
+    save.type='button';save.setAttribute('aria-label','收藏或取消收藏');save.onclick=function(){favorites=favorites.includes(d.id)?favorites.filter(function(x){return x!==d.id}):favorites.concat(d.id);try{localStorage.setItem('gcc-favorites',JSON.stringify(favorites))}catch(e){}render()};
+    topRow.appendChild(save);card.appendChild(topRow);
+    var mid=txt('div','', 'deal-middle');
+    var percent=txt('div',d.discount_pct.toFixed(1)+'%','percent');
+    mid.appendChild(percent);mid.appendChild(txt('span',d.deal_type==='bonus'?'贈卡等值估算':d.deal_type==='range'?'折扣下限':'標示折扣','dealtype'));
+    if(d.face_value&&d.price){mid.appendChild(txt('div','$'+d.face_value+' 面額\n售價 $'+d.price,'price'))}
+    card.appendChild(mid);card.appendChild(txt('p',d.title,'deal-title'));
+    var tags=txt('div','', 'tags');tags.appendChild(txt('span','未核實是否仍有效','tag'));
+    if(d.restricted)tags.appendChild(txt('span','可能有會員／指定帳號限制','tag'));
+    if(d.deal_type==='bonus')tags.appendChild(txt('span','贈卡 ≠ 現金折扣','tag'));
+    card.appendChild(tags);
+    var bottom=txt('div','', 'deal-bottom');bottom.appendChild(txt('small','優惠發布 '+prettyDate(d.published)));
+    var link=txt('a','查看原始優惠 ↗','buy');link.href=safeUrl(d.url);link.target='_blank';link.rel='noopener noreferrer';bottom.appendChild(link);card.appendChild(bottom);box.appendChild(card)
+  })
+}
+function load(){
+  set('statusTitle','正在讀取折扣資料…');
+  fetch('./data/deals.json?nocache='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('HTTP '+r.status);return r.json()}).then(function(x){data=x;render()}).catch(function(){data={deals:[],status:'unavailable'};render();set('statusText','無法讀取資料檔案，請檢查網站是否已部署成功。')})
+}
+function setFilter(next){filter=next;document.querySelectorAll('.chip').forEach(function(c){c.classList.toggle('on',c.dataset.filter===next)});el('homeBtn').classList.toggle('active',next!=='favorites');el('favBtn').classList.toggle('active',next==='favorites');render()}
+el('chips').addEventListener('click',function(ev){var c=ev.target.closest('.chip');if(c)setFilter(c.dataset.filter)});
+el('search').addEventListener('input',function(ev){query=ev.target.value;render()});
+el('sort').onclick=function(){sortDesc=!sortDesc;set('sort',sortDesc?'折扣最高 ↓':'折扣最低 ↑');render()};
+el('refresh').onclick=load;
+el('homeBtn').onclick=function(){setFilter('all');window.scrollTo({top:0,behavior:'smooth'})};
+el('favBtn').onclick=function(){setFilter('favorites');window.scrollTo({top:0,behavior:'smooth'})};
+el('infoBtn').onclick=function(){window.alert('將本網站加入 iPhone 主畫面：使用 Safari 開啟網站 → 分享 → 加入主畫面。\n\n每日排程會嘗試從公開來源更新優惠。不是即時交易資料；購買前請核對商家條件、價格與到期日。\n\n收藏只儲存在這台裝置，不需登入。')};
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(function(){});
+load();
+})();
+</script>
+</body></html>
