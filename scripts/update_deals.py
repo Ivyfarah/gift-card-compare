@@ -122,7 +122,7 @@ def category_brand(title: str):
     # Match known gift-card brands; generic/unknown cards are deliberately
     # placed in Other rather than wrongly labelled as retail/shopping.
     matches = [(brand, category) for brand, category in BRANDS
-               if re.search(r"(?<!\\w)" + re.escape(brand) + r"(?!\\w)", title, re.I)]
+               if re.search(r"(?<!\w)" + re.escape(brand) + r"(?!\w)", title, re.I)]
     # Avoid including short aliases when their longer name matched too.
     matches = [(brand, category) for brand, category in matches
                if not any(brand.lower() != other.lower()
