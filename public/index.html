@@ -67,6 +67,21 @@
     .buy{display:inline-flex;gap:6px;align-items:center;justify-content:center;border-radius:10px;background:#5552d8;color:#fff;padding:10px 12px;font-size:12px;text-decoration:none;font-weight:800;white-space:nowrap}
     .empty{border:1px dashed #d9deea;background:#fff;border-radius:19px;padding:37px 22px;text-align:center;color:#647088}
     .empty b{display:block;color:#333d56;font-size:16px;margin:12px 0 7px}.empty p{font-size:13px;line-height:1.7;margin:0}
+    .mode-switch{display:flex;gap:7px;background:#e8ebf5;border-radius:15px;padding:5px;margin:18px 0 3px}
+    .mode-tab{flex:1;border:0;border-radius:11px;background:transparent;color:#606c86;font-size:13px;font-weight:800;padding:12px 7px}
+    .mode-tab.active{background:#fff;color:#5047c7;box-shadow:0 2px 8px #1c255112}
+    .overview-grid{display:grid;grid-template-columns:1fr;gap:12px}
+    .overview-card{display:block;width:100%;text-align:left;background:white;border:1px solid var(--line);border-radius:18px;padding:17px;box-shadow:0 4px 19px #14244a06;color:var(--ink)}
+    .overview-card:focus-visible,.chip:focus-visible{outline:3px solid #7771eb}
+    .overview-top{display:flex;gap:9px;align-items:center;justify-content:space-between;font-size:16px;font-weight:800}
+    .overview-top .count{font-size:11px;border-radius:8px;background:#edeafd;padding:6px 8px;color:#5849ca;white-space:nowrap}
+    .overview-note{margin-top:5px;font-size:12px;color:var(--sub);line-height:1.6}
+    .overview-preview{border-top:1px solid var(--line);margin-top:12px;padding-top:10px;color:#4d5870;font-size:12px;line-height:1.9}
+    .overview-open{font-size:12px;color:#574add;font-weight:800;margin-top:9px}
+    .pickcard .pick-tag{font-size:11px;background:#f2f1ff;color:#554ac5;border-radius:8px;padding:6px 9px;display:inline-block}
+    .pickcard .pick-tag.found{background:var(--mint);color:var(--green)}
+    .pick-category{font-size:11px;color:var(--sub)}
+    @media(min-width:630px){.overview-grid{grid-template-columns:1fr 1fr}}
     .note{margin:26px 0 0;color:#8190a6;font-size:11px;line-height:1.8}
     .sources{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
     .sources a{padding:8px 10px;border:1px solid var(--line);border-radius:9px;text-decoration:none;background:white;color:#5f6881;font-size:11px}
@@ -82,7 +97,7 @@
   <header class="hero">
     <div class="topline"><span class="mark">✦</span> GIFT CARD COMPARE <span style="margin-left:auto;font-size:11px">🇺🇸 美國版</span></div>
     <h1>買禮品卡，<br>先看看哪裡最划算。</h1>
-    <p>每日整理公開優惠資訊，以估算折扣比較。即使沒有足夠優惠，也不會虛構 Top 10。</p>
+    <p>九大類別各有 10 張精選禮品卡，並提供近期公開折扣比較。推薦榜與折扣榜分開，不會用假優惠湊排名。</p>
     <div class="stats">
       <div class="stat"><small>可顯示優惠</small><strong id="totalStat">—</strong></div>
       <div class="stat"><small>最高估算折扣</small><strong id="bestStat">—</strong></div>
@@ -90,21 +105,36 @@
     </div>
   </header>
   <div class="status" role="status"><span class="dot" id="statusDot"></span><div><strong id="statusTitle">正在讀取折扣資料…</strong><span id="statusText">優惠為公開資訊整理，請在購買前確認期限、會員限制與結帳金額。</span></div></div>
-  <div class="headline"><div><h2 id="heading">今日精選 Top 10</h2><small>按估算折扣排序 · 非即時結帳報價</small></div><button class="refresh" id="refresh" type="button">↻ 重新整理</button></div>
+  <div class="mode-switch" id="modes" aria-label="榜單模式">
+    <button type="button" class="mode-tab active" data-mode="picks">⭐ 各類 Top 10 推薦</button>
+    <button type="button" class="mode-tab" data-mode="deals">🏷️ 近期折扣排行榜</button>
+  </div>
+  <div class="headline"><div><h2 id="heading">九大類 Top 10 推薦</h2><small id="rankNote">人工精選推薦 · 不是折扣或銷售排行榜</small></div><button class="refresh" id="refresh" type="button">↻ 重新整理</button></div>
   <div class="searchbox"><input type="search" id="search" class="search" placeholder="搜尋 Uber、Target、Disney、Costco…" aria-label="搜尋優惠"></div>
   <div class="chips" id="chips">
-    <button class="chip on" data-filter="all">全部優惠</button><button class="chip" data-filter="food">🍔 餐飲</button><button class="chip" data-filter="shopping">🛍️ 購物</button><button class="chip" data-filter="travel">✈️ 旅遊</button><button class="chip" data-filter="entertainment">🎮 娛樂</button><button class="chip" data-filter="favorites">♥ 收藏</button>
+    <button class="chip on" data-filter="all">全部類別</button>
+    <button class="chip" data-filter="food">🍔 餐飲</button>
+    <button class="chip" data-filter="grocery">🛒 超市量販</button>
+    <button class="chip" data-filter="shopping">🛍️ 綜合購物</button>
+    <button class="chip" data-filter="fashion">👗 服飾美妝</button>
+    <button class="chip" data-filter="tech">📱 電子遊戲</button>
+    <button class="chip" data-filter="travel">✈️ 旅遊交通</button>
+    <button class="chip" data-filter="entertainment">🎬 娛樂串流</button>
+    <button class="chip" data-filter="home">🏠 居家裝修</button>
+    <button class="chip" data-filter="services">⛽ 生活汽車</button>
+    <button class="chip" data-filter="other">🗂️ 其他優惠</button>
+    <button class="chip" data-filter="favorites">♥ 我的收藏</button>
   </div>
   <div class="toolbar"><span id="resultCount">準備載入…</span><button id="sort" class="sort" type="button">折扣最高 ↓</button></div>
   <div class="list" id="deals"><div class="empty"><div style="font-size:32px">🎁</div><b>正在整理今日優惠</b><p>如果折扣資料尚未產生，這裡會清楚顯示狀態。</p></div></div>
-  <p class="note">資料來自公開優惠文章與 RSS，並非商家官方庫存或即時價格 API。折扣可能有區域、會員、付款方式、手續費、數量、結束日期等限制；「獎勵／贈卡」估值與現金折扣不同。排名僅限可解析且最近發布的優惠，不能代表全美所有 Gift Card 的最佳價格。本站不銷售或代購禮品卡。</p>
+  <p class="note">「各類 Top 10 推薦」為人工精選的 90 張品牌禮品卡，排名按用途與一般送禮便利性整理，非即時折扣或客觀銷售名次，也不保證每個品牌現有可購買的禮品卡。「近期折扣」則來自公開優惠文章與 RSS，不是商家官方庫存或即時價格 API；折扣可能有地區、會員、付款、手續費及到期限制。購買前務必前往商家核對。本網站不銷售禮品卡。</p>
   <div class="sources"><a href="https://www.doctorofcredit.com/category/gift-card-deals/" target="_blank" rel="noopener noreferrer">Doctor of Credit ↗</a><a href="https://slickdeals.net/" target="_blank" rel="noopener noreferrer">Slickdeals ↗</a></div>
 </div>
 <nav class="nav" aria-label="主選單"><div class="nav-inner"><button type="button" id="homeBtn" class="active"><i>⌂</i>優惠排行榜</button><button type="button" id="favBtn"><i>♡</i>我的收藏</button><button type="button" id="infoBtn"><i>ⓘ</i>使用說明</button></div></nav>
 <script>
 (function(){
 'use strict';
-var data={generated_at:null,deals:[],status:'pending'},filter='all',query='',sortDesc=true;
+var data={generated_at:null,deals:[],status:'pending'},catalog={categories:[]},catalogState='loading',filter='all',query='',sortDesc=true,mode='picks';
 var favorites=[];
 try{favorites=JSON.parse(localStorage.getItem('gcc-favorites')||'[]');if(!Array.isArray(favorites))favorites=[]}catch(e){favorites=[]}
 function el(id){return document.getElementById(id)}
@@ -114,6 +144,110 @@ function safeUrl(url){try{var u=new URL(url);return ['https:','http:'].includes(
 function time(value){if(!value)return '尚無資料';var d=new Date(value);return isNaN(+d)?'未知':new Intl.DateTimeFormat('zh-TW',{timeZone:'America/Los_Angeles',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(d)}
 function ageDays(date){return (Date.now()-new Date(date).getTime())/86400000}
 function prettyDate(date){if(!date)return '未標示';var d=new Date(date);return isNaN(+d)?'未知':new Intl.DateTimeFormat('zh-TW',{timeZone:'America/Los_Angeles',month:'numeric',day:'numeric'}).format(d)}
+
+function normalizeBrand(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'')}
+function pickId(category,p){return 'pick:'+category.id+':'+normalizeBrand(p.brand)}
+function matchingDeal(p,all){
+  var allowed=[p.brand].concat(p.aliases||[]).map(normalizeBrand);
+  return all.filter(function(d){return allowed.includes(normalizeBrand(d.brand))})
+    .sort(function(a,b){return b.discount_pct-a.discount_pct})[0]||null;
+}
+function categoryLabel(id){
+  var cat=(catalog.categories||[]).find(function(c){return c.id===id});
+  return cat?cat.label:'其他';
+}
+function renderPicks(all){
+  var box=el('deals');box.replaceChildren();
+  el('sort').hidden=true;
+  set('rankNote','每類精選 10 張 · 推薦不等於折扣');
+  var cats=catalog.categories||[];
+  var term=query.trim().toLowerCase();
+  var viewCats=cats.filter(function(c){return filter==='all'||filter==='favorites'||c.id===filter});
+  var rows=[];
+  viewCats.forEach(function(c){(c.picks||[]).forEach(function(p){
+    if(filter==='favorites'&&!favorites.includes(pickId(c,p)))return;
+    if(term&&!String(c.label+' '+p.brand+' '+p.why).toLowerCase().includes(term))return;
+    rows.push({cat:c,pick:p});
+  })});
+  if(filter==='all'&&!term){
+    set('heading','九大類 Top 10 推薦');
+    set('resultCount',cats.length+' 個類別 · 共 '+rows.length+' 張推薦禮品卡');
+    if(!cats.length){
+      var e=txt('div','', 'empty');
+      e.appendChild(txt('b',catalogState==='loading'?'推薦榜單載入中…':'推薦資料暫時無法取得'));
+      e.appendChild(txt('p','可以切換到「近期折扣排行榜」查看公開優惠。'));
+      box.appendChild(e);return;
+    }
+    box.className='overview-grid';
+    cats.forEach(function(c){
+      var button=txt('button','', 'overview-card');button.type='button';
+      var head=txt('div','', 'overview-top');
+      head.appendChild(txt('span',c.icon+' '+c.label));
+      head.appendChild(txt('span',(c.picks||[]).length+' 張推薦','count'));
+      button.appendChild(head);
+      button.appendChild(txt('div',c.description,'overview-note'));
+      var summary=txt('div','', 'overview-preview');
+      (c.picks||[]).slice(0,3).forEach(function(p){summary.appendChild(txt('div',p.rank+'. '+p.brand))});
+      button.appendChild(summary);
+      button.appendChild(txt('div','查看完整 Top 10 →','overview-open'));
+      button.onclick=function(){setFilter(c.id);window.scrollTo({top:200,behavior:'smooth'})};
+      box.appendChild(button);
+    });
+    return;
+  }
+  box.className='list';
+  var selectedCat=cats.find(function(c){return c.id===filter});
+  set('heading',filter==='favorites'?'我收藏的推薦卡片':selectedCat?selectedCat.icon+' '+selectedCat.label+' Top 10':'搜尋推薦禮品卡');
+  set('resultCount','顯示 '+rows.length+' 張推薦'+(selectedCat?' · 共 10 個名次':''));
+  if(!rows.length){
+    var empty=txt('div','', 'empty');
+    empty.appendChild(txt('b',filter==='favorites'?'尚未收藏推薦禮品卡':'沒有符合的推薦'));
+    empty.appendChild(txt('p',filter==='favorites'?'點選推薦卡片右上角的愛心即可收藏。':'試試其他分類或清除搜尋。'));
+    box.appendChild(empty);return;
+  }
+  rows.forEach(function(row){
+    var c=row.cat,p=row.pick,found=matchingDeal(p,all);
+    var card=txt('article','', 'deal pickcard');
+    var line=txt('div','', 'deal-top');
+    line.appendChild(txt('span',String(p.rank).padStart(2,'0'),'rank'));
+    line.appendChild(txt('div',p.brand.substring(0,1).toUpperCase(),'brandmark'));
+    var identity=txt('div','');identity.style.minWidth='0';
+    identity.appendChild(txt('div',p.brand,'brandname'));
+    identity.appendChild(txt('div',c.icon+' '+c.label+' · 推薦第 '+p.rank+' 名','source'));
+    line.appendChild(identity);
+    var id=pickId(c,p);
+    var save=txt('button',favorites.includes(id)?'♥':'♡','save'+(favorites.includes(id)?' saved':''));
+    save.type='button';save.setAttribute('aria-label','收藏或取消收藏');
+    save.onclick=function(){favorites=favorites.includes(id)?favorites.filter(function(x){return x!==id}):favorites.concat(id);
+      try{localStorage.setItem('gcc-favorites',JSON.stringify(favorites))}catch(e){}render()};
+    line.appendChild(save);card.appendChild(line);
+    card.appendChild(txt('p','推薦理由：'+p.why,'deal-title'));
+    card.appendChild(txt('div',found?'近期公開文章標示 '+found.discount_pct.toFixed(1)+'%（未核實）':'目前未找到符合條件的近期公開折扣','pick-tag'+(found?' found':'')));
+    var bottom=txt('div','', 'deal-bottom');bottom.style.marginTop='12px';
+    bottom.appendChild(txt('small','編輯精選 · 非售價排名'));
+    if(found){
+      var link=txt('a','查看來源 ↗','buy');
+      link.href=safeUrl(found.url);link.target='_blank';link.rel='noopener noreferrer';bottom.appendChild(link);
+    }else{
+      var search=txt('button','查詢折扣','buy');search.type='button';search.style.border='0';
+      search.onclick=function(){mode='deals';filter='all';query=(p.aliases&&p.aliases[0])||p.brand;
+        el('search').value=query;updateControls();render();window.scrollTo({top:200,behavior:'smooth'})};
+      bottom.appendChild(search);
+    }
+    card.appendChild(bottom);box.appendChild(card);
+  });
+}
+function updateControls(){
+  document.querySelectorAll('.mode-tab').forEach(function(b){b.classList.toggle('active',b.dataset.mode===mode)});
+  document.querySelectorAll('.chip').forEach(function(b){b.classList.toggle('on',b.dataset.filter===filter)});
+  el('search').placeholder=mode==='picks'?'搜尋 90 張推薦卡片（如 Costco、Disney）':'搜尋近期折扣（如 Uber、Target）';
+  el('sort').hidden=mode==='picks';
+}
+function setMode(next){
+  mode=next;query='';el('search').value='';
+  if(filter==='other'&&next==='picks')filter='all';
+  updateControls();render();
+}
 function render(){
   var all=Array.isArray(data.deals)?data.deals.filter(function(d){return d&&typeof d.discount_pct==='number'&&d.discount_pct>0&&safeUrl(d.url)}):[];
   var best=all.reduce(function(n,d){return Math.max(n,d.discount_pct)},0);
@@ -122,6 +256,10 @@ function render(){
   el('statusDot').className='dot '+(fresh&&data.status==='ok'?'good':data.status==='unavailable'?'bad':'');
   set('statusTitle',!data.generated_at?'尚未產生每日資料':!fresh?'資料可能已過期':data.status==='partial'?'部分來源暫時無法更新':data.status==='unavailable'?'資料來源暫時不可用':'每日優惠資料已載入');
   set('statusText',!data.generated_at?'需要先啟用 GitHub Pages 與每日工作流程。': '上次執行：'+time(data.generated_at)+'（美西）。折扣未逐筆驗證，點選原始文章確認是否仍有效。');
+  if(mode==='picks'){renderPicks(all);return}
+  el('deals').className='list';
+  el('sort').hidden=false;
+  set('rankNote','按公開文章估算折扣排序 · 非即時結帳價格');
   var term=query.trim().toLowerCase();
   var selected=all.filter(function(d){
     if(filter==='favorites'&&!favorites.includes(d.id))return false;
@@ -130,7 +268,7 @@ function render(){
   }).sort(function(a,b){return sortDesc?b.discount_pct-a.discount_pct:a.discount_pct-b.discount_pct});
   var top=filter==='all'&&!term?selected.slice(0,10):selected;
   set('resultCount',filter==='all'&&!term?'符合條件 '+all.length+' 筆 · 顯示前 '+top.length+' 筆':'找到 '+top.length+' 筆優惠');
-  set('heading',filter==='favorites'?'我的收藏':filter==='all'?'今日精選 Top 10':'分類優惠');
+  set('heading',filter==='favorites'?'收藏的折扣':filter==='all'?'近期折扣 Top 10':categoryLabel(filter)+'近期優惠');
   var box=el('deals');box.replaceChildren();
   if(!top.length){var empty=txt('div','', 'empty');var emoji=txt('div',filter==='favorites'?'♡':'🎁');emoji.style.fontSize='32px';empty.appendChild(emoji);empty.appendChild(txt('b',filter==='favorites'?'尚未收藏優惠':!all.length?'目前沒有可顯示的優惠':'沒有符合條件的優惠'));empty.appendChild(txt('p',!all.length?'系統不會用假折扣填滿排行榜。請查看上方的最後更新狀態。':filter==='favorites'?'點選優惠右上角的愛心加入收藏。':'試試其他品牌、分類或清除搜尋。'));box.appendChild(empty);return}
   top.forEach(function(d,i){
@@ -160,17 +298,31 @@ function render(){
 }
 function load(){
   set('statusTitle','正在讀取折扣資料…');
-  fetch('./data/deals.json?nocache='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('HTTP '+r.status);return r.json()}).then(function(x){data=x;render()}).catch(function(){data={deals:[],status:'unavailable'};render();set('statusText','無法讀取資料檔案，請檢查網站是否已部署成功。')})
+  fetch('./data/deals.json?nocache='+Date.now(),{cache:'no-store'}).then(function(r){
+    if(!r.ok)throw Error('HTTP '+r.status);return r.json()
+  }).then(function(x){data=x;render()}).catch(function(){
+    data={deals:[],status:'unavailable'};render();
+    set('statusText','無法讀取即時整理的資料檔案，仍可瀏覽編輯精選 Top 10 推薦。')
+  });
+  fetch('./data/recommendations.json?nocache='+Date.now(),{cache:'no-store'}).then(function(r){
+    if(!r.ok)throw Error('HTTP '+r.status);return r.json()
+  }).then(function(x){
+    catalog=x&&Array.isArray(x.categories)?x:{categories:[]};
+    catalogState='ok';render()
+  }).catch(function(){catalogState='unavailable';render()});
 }
-function setFilter(next){filter=next;document.querySelectorAll('.chip').forEach(function(c){c.classList.toggle('on',c.dataset.filter===next)});el('homeBtn').classList.toggle('active',next!=='favorites');el('favBtn').classList.toggle('active',next==='favorites');render()}
-el('chips').addEventListener('click',function(ev){var c=ev.target.closest('.chip');if(c)setFilter(c.dataset.filter)});
+
+function setFilter(next){filter=next;updateControls();el('homeBtn').classList.toggle('active',next!=='favorites');el('favBtn').classList.toggle('active',next==='favorites');render()}
+el('chips').addEventListener('click',function(ev){var c=ev.target.closest('.chip');if(c){if(mode==='picks'&&c.dataset.filter==='other')setMode('deals');setFilter(c.dataset.filter)}});
+el('modes').addEventListener('click',function(ev){var b=ev.target.closest('.mode-tab');if(b)setMode(b.dataset.mode)});
 el('search').addEventListener('input',function(ev){query=ev.target.value;render()});
 el('sort').onclick=function(){sortDesc=!sortDesc;set('sort',sortDesc?'折扣最高 ↓':'折扣最低 ↑');render()};
 el('refresh').onclick=load;
-el('homeBtn').onclick=function(){setFilter('all');window.scrollTo({top:0,behavior:'smooth'})};
-el('favBtn').onclick=function(){setFilter('favorites');window.scrollTo({top:0,behavior:'smooth'})};
-el('infoBtn').onclick=function(){window.alert('將本網站加入 iPhone 主畫面：使用 Safari 開啟網站 → 分享 → 加入主畫面。\n\n每日排程會嘗試從公開來源更新優惠。不是即時交易資料；購買前請核對商家條件、價格與到期日。\n\n收藏只儲存在這台裝置，不需登入。')};
+el('homeBtn').onclick=function(){setMode('picks');setFilter('all');window.scrollTo({top:0,behavior:'smooth'})};
+el('favBtn').onclick=function(){setMode('picks');setFilter('favorites');window.scrollTo({top:0,behavior:'smooth'})};
+el('infoBtn').onclick=function(){window.alert('推薦 Top 10：九個類別各有 10 張人工精選禮品卡，與實際折扣無關。\n\n近期折扣：每日嘗試整理公開文章，資料可能不完整或過期。下單前請向商家確認。\n\n加入 iPhone 主畫面：Safari 開啟網站 → 分享 → 加入主畫面。收藏僅儲存在這台裝置。')};
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(function(){});
+updateControls();
 load();
 })();
 </script>
