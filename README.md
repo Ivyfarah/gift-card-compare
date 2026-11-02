@@ -36,3 +36,7 @@ python3 scripts/update_deals.py
 ```
 
 The GitHub Actions workflow fetches data and **deploys directly** from the `public/` folder; it does not commit daily JSON outputs back to the repo. See `.github/workflows/daily.yml`.
+
+## Troubleshooting first publication
+
+If the initial workflow failed at **Configure GitHub Pages** because Pages was disabled, first choose **Settings → Pages → Build and deployment → Source → GitHub Actions**, then rerun the workflow. Any new commit on `main` also starts the publishing workflow automatically. A green **deploy** job indicates the first site publication succeeded.
