@@ -97,19 +97,19 @@
   <header class="hero">
     <div class="topline"><span class="mark">✦</span> GIFT CARD COMPARE <span style="margin-left:auto;font-size:11px">🇺🇸 美國版</span></div>
     <h1>買禮品卡，<br>先看看哪裡最划算。</h1>
-    <p>九大類別各有 10 張精選禮品卡，並提供近期公開折扣比較。推薦榜與折扣榜分開，不會用假優惠湊排名。</p>
+    <p>九大類別每天更新公開的禮品卡折扣，按最高可省百分比排列。每類最多 10 筆；不足十筆不會用沒有折扣的卡湊數。</p>
     <div class="stats">
       <div class="stat"><small>可顯示優惠</small><strong id="totalStat">—</strong></div>
-      <div class="stat"><small>最高估算折扣</small><strong id="bestStat">—</strong></div>
+      <div class="stat"><small>最高標示折扣</small><strong id="bestStat">—</strong></div>
       <div class="stat"><small>最近更新（美西）</small><strong class="small" id="timeStat">待更新</strong></div>
     </div>
   </header>
   <div class="status" role="status"><span class="dot" id="statusDot"></span><div><strong id="statusTitle">正在讀取折扣資料…</strong><span id="statusText">優惠為公開資訊整理，請在購買前確認期限、會員限制與結帳金額。</span></div></div>
   <div class="mode-switch" id="modes" aria-label="榜單模式">
-    <button type="button" class="mode-tab active" data-mode="picks">⭐ 各類 Top 10 推薦</button>
-    <button type="button" class="mode-tab" data-mode="deals">🏷️ 近期折扣排行榜</button>
+    <button type="button" class="mode-tab active" data-mode="deals">🏷️ 各類實際折扣 Top 10</button>
+    <button type="button" class="mode-tab" data-mode="picks">⭐ 品牌推薦（無折扣亦可）</button>
   </div>
-  <div class="headline"><div><h2 id="heading">九大類 Top 10 推薦</h2><small id="rankNote">人工精選推薦 · 不是折扣或銷售排行榜</small></div><button class="refresh" id="refresh" type="button">↻ 重新整理</button></div>
+  <div class="headline"><div><h2 id="heading">九大類優惠 Top 10</h2><small id="rankNote">依來源標示的折扣%高低排序 · 點選分類查看</small></div><button class="refresh" id="refresh" type="button">↻ 重新整理</button></div>
   <div class="searchbox"><input type="search" id="search" class="search" placeholder="搜尋 Uber、Target、Disney、Costco…" aria-label="搜尋優惠"></div>
   <div class="chips" id="chips">
     <button class="chip on" data-filter="all">全部類別</button>
@@ -127,14 +127,14 @@
   </div>
   <div class="toolbar"><span id="resultCount">準備載入…</span><button id="sort" class="sort" type="button">折扣最高 ↓</button></div>
   <div class="list" id="deals"><div class="empty"><div style="font-size:32px">🎁</div><b>正在整理今日優惠</b><p>如果折扣資料尚未產生，這裡會清楚顯示狀態。</p></div></div>
-  <p class="note">「各類 Top 10 推薦」為人工精選的 90 張品牌禮品卡，排名按用途與一般送禮便利性整理，非即時折扣或客觀銷售名次，也不保證每個品牌現有可購買的禮品卡。「近期折扣」則來自公開優惠文章與 RSS，不是商家官方庫存或即時價格 API；折扣可能有地區、會員、付款、手續費及到期限制。購買前務必前往商家核對。本網站不銷售禮品卡。</p>
-  <div class="sources"><a href="https://www.doctorofcredit.com/category/gift-card-deals/" target="_blank" rel="noopener noreferrer">Doctor of Credit ↗</a><a href="https://slickdeals.net/" target="_blank" rel="noopener noreferrer">Slickdeals ↗</a></div>
+  <p class="note"><b>折扣資訊說明：</b>CardCash 為二手／轉售禮品卡平台，顯示的是品牌頁面「最高可省」（Up to）折扣，不保證每一張面額都有相同折扣，面額、實際售價、庫存與交付方式須以結帳頁為準。Doctor of Credit / Slickdeals 為近期文章整理，優惠可能已失效。公開資料不是每筆交易的即時價格驗證。每類最多列前 10 筆，找不到就不捏造；推薦榜是另一個獨立頁籤，不算特價。購買前請核對卡片餘額、有效性、限制、手續費和退款保障。本站不代購。</p>
+  <div class="sources"><a href="https://www.cardcash.com/buy-gift-cards/" target="_blank" rel="noopener noreferrer">CardCash ↗</a><a href="https://www.doctorofcredit.com/category/gift-card-deals/" target="_blank" rel="noopener noreferrer">Doctor of Credit ↗</a><a href="https://slickdeals.net/" target="_blank" rel="noopener noreferrer">Slickdeals ↗</a></div>
 </div>
 <nav class="nav" aria-label="主選單"><div class="nav-inner"><button type="button" id="homeBtn" class="active"><i>⌂</i>優惠排行榜</button><button type="button" id="favBtn"><i>♡</i>我的收藏</button><button type="button" id="infoBtn"><i>ⓘ</i>使用說明</button></div></nav>
 <script>
 (function(){
 'use strict';
-var data={generated_at:null,deals:[],status:'pending'},catalog={categories:[]},catalogState='loading',filter='all',query='',sortDesc=true,mode='picks';
+var data={generated_at:null,deals:[],status:'pending'},catalog={categories:[]},catalogState='loading',filter='all',query='',sortDesc=true,mode='deals';
 var favorites=[];
 try{favorites=JSON.parse(localStorage.getItem('gcc-favorites')||'[]');if(!Array.isArray(favorites))favorites=[]}catch(e){favorites=[]}
 function el(id){return document.getElementById(id)}
@@ -240,7 +240,7 @@ function renderPicks(all){
 function updateControls(){
   document.querySelectorAll('.mode-tab').forEach(function(b){b.classList.toggle('active',b.dataset.mode===mode)});
   document.querySelectorAll('.chip').forEach(function(b){b.classList.toggle('on',b.dataset.filter===filter)});
-  el('search').placeholder=mode==='picks'?'搜尋 90 張推薦卡片（如 Costco、Disney）':'搜尋近期折扣（如 Uber、Target）';
+  el('search').placeholder=mode==='picks'?'搜尋 90 張推薦卡片':'搜尋折扣品牌、商家（如 Uber、Target）';
   el('sort').hidden=mode==='picks';
   document.querySelector('[data-filter="other"]').hidden=mode==='picks';
 }
@@ -256,20 +256,52 @@ function render(){
   var fresh=data.generated_at&&ageDays(data.generated_at)<1.6;
   el('statusDot').className='dot '+(fresh&&data.status==='ok'?'good':data.status==='unavailable'?'bad':'');
   set('statusTitle',!data.generated_at?'尚未產生每日資料':!fresh?'資料可能已過期':data.status==='partial'?'部分來源暫時無法更新':data.status==='unavailable'?'資料來源暫時不可用':'每日優惠資料已載入');
-  set('statusText',!data.generated_at?'需要先啟用 GitHub Pages 與每日工作流程。': '上次執行：'+time(data.generated_at)+'（美西）。折扣未逐筆驗證，點選原始文章確認是否仍有效。');
+  set('statusText',!data.generated_at?'尚未有每日更新結果。':'最後抓取：'+time(data.generated_at)+'（美西）。'+(data.cardcash_pages_ok||0)+' 個 CardCash 分類頁已讀取，實際折扣和庫存以來源結帳為準。');
   if(mode==='picks'){renderPicks(all);return}
   el('deals').className='list';
   el('sort').hidden=false;
-  set('rankNote','按公開文章估算折扣排序 · 非即時結帳價格');
+  set('rankNote','CardCash 最高可省% + 近期優惠文章 · 實際結帳價可能不同');
   var term=query.trim().toLowerCase();
+  if(filter==='all'&&!term){
+    el('sort').hidden=true;
+    set('heading','九大類優惠 Top 10');
+    set('resultCount','共 '+all.length+' 筆公開優惠 · 點分類查看折扣排名');
+    var over=el('deals');over.replaceChildren();over.className='overview-grid';
+    (catalog.categories||[]).forEach(function(c){
+      var catDeals=all.filter(function(d){return d.category===c.id})
+        .sort(function(a,b){return b.discount_pct-a.discount_pct}).slice(0,10);
+      var button=txt('button','', 'overview-card');button.type='button';
+      var head=txt('div','', 'overview-top');
+      head.appendChild(txt('span',c.icon+' '+c.label));
+      head.appendChild(txt('span',catDeals.length+'/10 筆','count'));
+      button.appendChild(head);
+      button.appendChild(txt('div',catDeals.length?'目前最高標示 '+catDeals[0].discount_pct.toFixed(1)+'%（非保證成交價）':'尚無可列出的近期折扣','overview-note'));
+      var preview=txt('div','', 'overview-preview');
+      if(!catDeals.length)preview.appendChild(txt('div','暫無資料，可查看原始來源或其他分類'));
+      catDeals.slice(0,3).forEach(function(d,i){
+        preview.appendChild(txt('div',(i+1)+'. '+d.brand+' — '+(d.deal_type==='up_to'?'最高 ':'')+d.discount_pct.toFixed(1)+'%'));
+      });
+      button.appendChild(preview);
+      button.appendChild(txt('div','查看此類折扣 Top 10 →','overview-open'));
+      button.onclick=function(){setFilter(c.id);window.scrollTo({top:200,behavior:'smooth'})};
+      over.appendChild(button);
+    });
+    if(!catalog.categories||!catalog.categories.length){
+      var e=txt('div','', 'empty');
+      e.appendChild(txt('b','正在載入九大分類'));
+      e.appendChild(txt('p','分類資料未載入前，可先使用上方的分類選單。'));over.appendChild(e)
+    }
+    return;
+  }
+  el('sort').hidden=false;
   var selected=all.filter(function(d){
     if(filter==='favorites'&&!favorites.includes(d.id))return false;
     if(filter!=='favorites'&&filter!=='all'&&d.category!==filter)return false;
     return !term||(String(d.brand)+' '+d.title+' '+d.source).toLowerCase().includes(term)
   }).sort(function(a,b){return sortDesc?b.discount_pct-a.discount_pct:a.discount_pct-b.discount_pct});
-  var top=!term&&filter!=='favorites'?selected.slice(0,10):selected;
-  set('resultCount',!term&&filter!=='favorites'?'符合條件 '+selected.length+' 筆 · 顯示前 '+top.length+' 筆':'找到 '+top.length+' 筆優惠');
-  set('heading',filter==='favorites'?'收藏的折扣':filter==='all'?'近期折扣 Top 10':categoryLabel(filter)+'近期優惠');
+  var top=filter!=='favorites'?selected.slice(0,10):selected;
+  set('resultCount','符合條件 '+selected.length+' 筆 · 排列前 '+top.length+' 筆');
+  set('heading',filter==='favorites'?'收藏的折扣':filter==='all'?'全部優惠 Top 10':categoryLabel(filter)+' · 折扣 Top 10');
   var box=el('deals');box.replaceChildren();
   if(!top.length){var empty=txt('div','', 'empty');var emoji=txt('div',filter==='favorites'?'♡':'🎁');emoji.style.fontSize='32px';empty.appendChild(emoji);empty.appendChild(txt('b',filter==='favorites'?'尚未收藏優惠':!all.length?'目前沒有可顯示的優惠':'沒有符合條件的優惠'));empty.appendChild(txt('p',!all.length?'系統不會用假折扣填滿排行榜。請查看上方的最後更新狀態。':filter==='favorites'?'點選優惠右上角的愛心加入收藏。':'試試其他品牌、分類或清除搜尋。'));box.appendChild(empty);return}
   top.forEach(function(d,i){
@@ -285,16 +317,16 @@ function render(){
     save.type='button';save.setAttribute('aria-label','收藏或取消收藏');save.onclick=function(){favorites=favorites.includes(d.id)?favorites.filter(function(x){return x!==d.id}):favorites.concat(d.id);try{localStorage.setItem('gcc-favorites',JSON.stringify(favorites))}catch(e){}render()};
     topRow.appendChild(save);card.appendChild(topRow);
     var mid=txt('div','', 'deal-middle');
-    var percent=txt('div',d.discount_pct.toFixed(1)+'%','percent');
-    mid.appendChild(percent);mid.appendChild(txt('span',d.deal_type==='bonus'?'贈卡等值估算':d.deal_type==='range'?'折扣下限':'標示折扣','dealtype'));
+    var percent=txt('div',(d.deal_type==='up_to'?'最高 ':'')+d.discount_pct.toFixed(1)+'%','percent');
+    mid.appendChild(percent);mid.appendChild(txt('span',d.deal_type==='up_to'?'最高可省 · 轉售卡':d.deal_type==='bonus'?'贈卡等值估算':d.deal_type==='range'?'折扣下限':'文章標示折扣','dealtype'));
     if(d.face_value&&d.price){mid.appendChild(txt('div','$'+d.face_value+' 面額\n售價 $'+d.price,'price'))}
     card.appendChild(mid);card.appendChild(txt('p',d.title,'deal-title'));
-    var tags=txt('div','', 'tags');tags.appendChild(txt('span','未核實是否仍有效','tag'));
+    var tags=txt('div','', 'tags');tags.appendChild(txt('span',d.source_kind==='resale_listing'?'二手／轉售卡 · 售價與面額須確認':'公開文章 · 未核實是否仍有效','tag'));
     if(d.restricted)tags.appendChild(txt('span','可能有會員／指定帳號限制','tag'));
     if(d.deal_type==='bonus')tags.appendChild(txt('span','贈卡 ≠ 現金折扣','tag'));
     card.appendChild(tags);
-    var bottom=txt('div','', 'deal-bottom');bottom.appendChild(txt('small','優惠發布 '+prettyDate(d.published)));
-    var link=txt('a','查看原始優惠 ↗','buy');link.href=safeUrl(d.url);link.target='_blank';link.rel='noopener noreferrer';bottom.appendChild(link);card.appendChild(bottom);box.appendChild(card)
+    var bottom=txt('div','', 'deal-bottom');bottom.appendChild(txt('small',(d.source_kind==='resale_listing'?'頁面抓取 ':'文章發布 ')+prettyDate(d.published)));
+    var link=txt('a',d.source_kind==='resale_listing'?'查看卡片售價 ↗':'查看優惠來源 ↗','buy');link.href=safeUrl(d.url);link.target='_blank';link.rel='noopener noreferrer';bottom.appendChild(link);card.appendChild(bottom);box.appendChild(card)
   })
 }
 function load(){
@@ -319,9 +351,9 @@ el('modes').addEventListener('click',function(ev){var b=ev.target.closest('.mode
 el('search').addEventListener('input',function(ev){query=ev.target.value;render()});
 el('sort').onclick=function(){sortDesc=!sortDesc;set('sort',sortDesc?'折扣最高 ↓':'折扣最低 ↑');render()};
 el('refresh').onclick=load;
-el('homeBtn').onclick=function(){setMode('picks');setFilter('all');window.scrollTo({top:0,behavior:'smooth'})};
-el('favBtn').onclick=function(){setMode('picks');setFilter('favorites');window.scrollTo({top:0,behavior:'smooth'})};
-el('infoBtn').onclick=function(){window.alert('推薦 Top 10：九個類別各有 10 張人工精選禮品卡，與實際折扣無關。\n\n近期折扣：每日嘗試整理公開文章，資料可能不完整或過期。下單前請向商家確認。\n\n加入 iPhone 主畫面：Safari 開啟網站 → 分享 → 加入主畫面。收藏僅儲存在這台裝置。')};
+el('homeBtn').onclick=function(){setMode('deals');setFilter('all');window.scrollTo({top:0,behavior:'smooth'})};
+el('favBtn').onclick=function(){setFilter('favorites');window.scrollTo({top:0,behavior:'smooth'})};
+el('infoBtn').onclick=function(){window.alert('折扣 Top 10：依來源標示的百分比高到低排列，最高可省不保證所有面額都買得到。CardCash 屬轉售禮品卡市場，請確認餘額、卡別、交付與保障。\n\n編輯精選榜與實際折扣榜分開。若沒有 10 張符合條件的折扣，只顯示實際找到的筆數。\n\nSafari 分享 → 加入主畫面；收藏只保存在本機。')};
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(function(){});
 updateControls();
 load();
