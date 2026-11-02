@@ -29,23 +29,67 @@ SOURCES = [
     ("Slickdeals", "https://slickdeals.net/newsearch.php?mode=frontpage&searcharea=deals&searchin=first&rss=1"),
     ("Slickdeals", "https://slickdeals.net/newsearch.php?mode=popdeals&searcharea=deals&searchin=first&rss=1"),
 ]
+# Target brands are classified by the card's redemption use, not the storefront
+# selling a third-party card. Longest matching brands win (Uber Eats vs Uber).
 BRANDS = [
-    ("DoorDash", "food"), ("Uber Eats", "food"), ("Uber", "travel"),
-    ("Instacart", "shopping"), ("Starbucks", "food"), ("Chipotle", "food"),
-    ("Dunkin", "food"), ("Panera", "food"), ("Domino", "food"),
-    ("Subway", "food"), ("Olive Garden", "food"), ("Chili", "food"),
-    ("Target", "shopping"), ("Walmart", "shopping"), ("Costco", "shopping"),
-    ("Best Buy", "shopping"), ("Home Depot", "shopping"), ("Lowe", "shopping"),
-    ("Amazon", "shopping"), ("Apple", "shopping"), ("Nordstrom", "shopping"),
-    ("Macy", "shopping"), ("Sephora", "shopping"), ("Ulta", "shopping"),
-    ("Nike", "shopping"), ("Adidas", "shopping"), ("Bath & Body Works", "shopping"),
-    ("Disney", "entertainment"), ("Roblox", "entertainment"), ("PlayStation", "entertainment"),
-    ("Xbox", "entertainment"), ("Steam", "entertainment"), ("Nintendo", "entertainment"),
+    # Restaurants and delivery
+    ("Uber Eats", "food"), ("DoorDash", "food"), ("Grubhub", "food"),
+    ("Starbucks", "food"), ("Chipotle", "food"), ("Dunkin", "food"),
+    ("Panera", "food"), ("Domino's", "food"), ("Dominos", "food"),
+    ("Subway", "food"), ("Olive Garden", "food"), ("Chili's", "food"),
+    ("Chili", "food"), ("The Cheesecake Factory", "food"),
+    ("Taco Bell", "food"), ("McDonald's", "food"), ("Panda Express", "food"),
+    ("Shake Shack", "food"), ("Burger King", "food"), ("Pizza Hut", "food"),
+    ("Wendy's", "food"), ("Chick-fil-A", "food"), ("Papa Johns", "food"),
+    # Grocery and warehouse clubs
+    ("Instacart", "grocery"), ("Whole Foods", "grocery"),
+    ("Sam's Club", "grocery"), ("Costco", "grocery"), ("Kroger", "grocery"),
+    ("Safeway", "grocery"), ("Albertsons", "grocery"), ("Publix", "grocery"),
+    ("Aldi", "grocery"), ("Wegmans", "grocery"), ("Meijer", "grocery"),
+    # General retail and marketplaces
+    ("Target", "shopping"), ("Walmart", "shopping"), ("Amazon", "shopping"),
+    ("eBay", "shopping"), ("Etsy", "shopping"), ("QVC", "shopping"),
+    # Fashion / beauty
+    ("Nordstrom", "fashion"), ("Macy's", "fashion"), ("Macy", "fashion"),
+    ("Sephora", "fashion"), ("Ulta Beauty", "fashion"), ("Ulta", "fashion"),
+    ("Nike", "fashion"), ("Adidas", "fashion"), ("Bath & Body Works", "fashion"),
+    ("Old Navy", "fashion"), ("Lululemon", "fashion"), ("Athleta", "fashion"),
+    ("Kohl's", "fashion"), ("Gap", "fashion"), ("JCPenney", "fashion"),
+    ("TJ Maxx", "fashion"), ("Marshalls", "fashion"),
+    # Electronics / games
+    ("Best Buy", "tech"), ("Apple", "tech"), ("Google Play", "tech"),
+    ("Newegg", "tech"), ("GameStop", "tech"), ("Nintendo", "tech"),
+    ("PlayStation", "tech"), ("Xbox", "tech"), ("Roblox", "tech"),
+    ("Steam", "tech"), ("Meta Quest", "tech"),
+    # Travel / transport
+    ("Uber", "travel"), ("Lyft", "travel"), ("Delta", "travel"),
+    ("Southwest", "travel"), ("United Airlines", "travel"),
+    ("American Airlines", "travel"), ("Airbnb", "travel"),
+    ("Hotels.com", "travel"), ("Marriott", "travel"), ("Hilton", "travel"),
+    ("Amtrak", "travel"), ("Expedia", "travel"),
+    # Entertainment / streaming
+    ("Disney+", "entertainment"), ("Disney", "entertainment"),
     ("Netflix", "entertainment"), ("Hulu", "entertainment"),
-    ("Delta", "travel"), ("Southwest", "travel"), ("Amtrak", "travel"),
-    ("Airbnb", "travel"), ("Hotels.com", "travel"), ("Marriott", "travel"),
-    ("Lyft", "travel"), ("StubHub", "entertainment"),
+    ("Spotify", "entertainment"), ("AMC Theatres", "entertainment"),
+    ("Regal Cinemas", "entertainment"), ("Cinemark", "entertainment"),
+    ("StubHub", "entertainment"), ("Ticketmaster", "entertainment"),
+    ("Fandango", "entertainment"), ("Paramount+", "entertainment"),
+    # Home / improvements
+    ("Home Depot", "home"), ("Lowe's", "home"), ("Lowe", "home"),
+    ("IKEA", "home"), ("Wayfair", "home"), ("Pottery Barn", "home"),
+    ("Williams Sonoma", "home"), ("Crate & Barrel", "home"),
+    ("Ace Hardware", "home"),
+    # Everyday services, fuel, pets
+    ("CVS", "services"), ("Walgreens", "services"), ("Petco", "services"),
+    ("PetSmart", "services"), ("Chewy", "services"), ("Shell", "services"),
+    ("Chevron", "services"), ("Exxon", "services"), ("Mobil", "services"),
+    ("AutoZone", "services"), ("Massage Envy", "services"),
 ]
+# Merchants commonly mentioned as the _seller_ of a different brand's card.
+RETAILER_SELLERS = {
+    "Costco", "Best Buy", "Walmart", "Target", "Amazon",
+    "Newegg", "Sam's Club", "Kroger",
+}
 GIFT_WORD = re.compile(r"\b(?:gift[\s-]*cards?|e[\s-]*gift[\s-]*cards?|giftcards?)\b", re.I)
 REJECT = re.compile(
     r"\b(?:expired|unconfirmed|rumor|scam|cashback|cash back|"
@@ -75,18 +119,27 @@ def clean(value: str) -> str:
 
 
 def category_brand(title: str):
-    found = [(brand, category) for brand, category in BRANDS
-             if re.search(r"(?<!\w)" + re.escape(brand) + r"(?!\w)", title, re.I)]
-    # A retailer selling a third-party card is not necessarily the card brand.
-    for name in ("Costco", "Best Buy", "Walmart", "Target", "Amazon", "Newegg"):
-        if len(found) > 1:
-            found = [x for x in found if x[0] != name]
-    if not found:
-        return "Other", "shopping"
-    if len(found) >= 2:
-        return " / ".join(b for b, _ in found[:2]), found[0][1]
-    return found[0]
-
+    # Match known gift-card brands; generic/unknown cards are deliberately
+    # placed in Other rather than wrongly labelled as retail/shopping.
+    matches = [(brand, category) for brand, category in BRANDS
+               if re.search(r"(?<!\\w)" + re.escape(brand) + r"(?!\\w)", title, re.I)]
+    # Avoid including short aliases when their longer name matched too.
+    matches = [(brand, category) for brand, category in matches
+               if not any(brand.lower() != other.lower()
+                          and brand.lower() in other.lower()
+                          for other, _ in matches)]
+    if len(matches) > 1:
+        non_sellers = [(brand, category) for brand, category in matches
+                       if brand not in RETAILER_SELLERS]
+        if non_sellers:
+            matches = non_sellers
+    if not matches:
+        return "Other", "other"
+    if len(matches) == 1:
+        return matches[0]
+    # Multiple recipient brands can be offered together; do not pretend the
+    # article concerns exactly one. The first category is a best-effort guess.
+    return " / ".join(brand for brand, _ in matches[:2]), matches[0][1]
 
 def parse_published(entry) -> dt.datetime | None:
     stamp = entry.findtext("pubDate") or entry.findtext("{http://www.w3.org/2005/Atom}updated")
