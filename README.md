@@ -4,6 +4,10 @@ A mobile-first Traditional Chinese **US gift card discount tracker** designed to
 
 ## Features
 
+- **Nine categories, each with 10 manually curated recommendations (90 cards total)**: restaurants, grocery/warehouse, general shopping, fashion/beauty, tech/gaming, travel/transport, entertainment/streaming, home improvement, and everyday services/auto. On the home screen, tap a category to view its ten recommended gift cards.
+- Two clearly separated views: **Top 10 Recommendations** (editorial utility-based choices) and **Recent Discount Top 10** (only sourced article headlines with detectable savings). No invented discount percentages to fill a chart.
+- Recommendation names and reasons live in `public/data/recommendations.json`. Rankings are subjective, not independently measured popularity or current discounts.
+
 - Top 10 recent publicly reported gift card deals, ranked by stated or calculated estimated discount percentage.
 - Search brands, browse categories, sort savings, save favorites in your browser.
 - Links to original offer posts for verification.
