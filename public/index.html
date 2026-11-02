@@ -242,6 +242,7 @@ function updateControls(){
   document.querySelectorAll('.chip').forEach(function(b){b.classList.toggle('on',b.dataset.filter===filter)});
   el('search').placeholder=mode==='picks'?'搜尋 90 張推薦卡片（如 Costco、Disney）':'搜尋近期折扣（如 Uber、Target）';
   el('sort').hidden=mode==='picks';
+  document.querySelector('[data-filter="other"]').hidden=mode==='picks';
 }
 function setMode(next){
   mode=next;query='';el('search').value='';
