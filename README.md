@@ -25,6 +25,10 @@ The workflow runs on changes to main and on a daily schedule at **16:00 UTC** (8
 
 ## Source and price limitations
 
+**Minimum display discount: 10%**. Both the updater and the browser require `discount_pct >= 10`. All nine categories sort by discount descending, with up to 10 items per category. A category with no qualifying reported offers remains empty rather than being padded with invented discounts.
+
+**Direct retailer checkout price verification is NOT implemented yet.** A one-time feasibility test of public retail category pages found Costco and Sam's Club category pages were reachable but did not expose usable price-and-face-value pairs in their returned static HTML; the Best Buy test timed out. As a result, the app currently shows *unverified published deal leads*, not verified retailer quotes. Do not label these items "verified" or imply full coverage of US retailers. A genuine direct-price comparison requires supported APIs or reliably accessible product pages and explicit validation of card face value, checkout price, seller, terms, region and stock.
+
 **User preference: only new gift cards from brands or established primary retailers.** Consumer resale, secondhand cards and card-exchange brokers (including CardCash, Raise/GCX, Gameflip, Cardpool, and similar sources) are permanently excluded from the importer. The app also filters out any obsolete resale entries at display time to protect against stale cached data. There is no fallback to secondhand cards to fill a category's Top 10.
 
 With this stricter requirement, a category may legitimately show fewer than ten current deals. A deal-article headline from a well-known publisher is not itself proof of an authorized reseller: always confirm the checkout merchant and final terms before purchasing.
