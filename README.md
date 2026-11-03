@@ -25,6 +25,10 @@ The workflow runs on changes to main and on a daily schedule at **16:00 UTC** (8
 
 ## Source and price limitations
 
+**User preference: only new gift cards from brands or established primary retailers.** Consumer resale, secondhand cards and card-exchange brokers (including CardCash, Raise/GCX, Gameflip, Cardpool, and similar sources) are permanently excluded from the importer. The app also filters out any obsolete resale entries at display time to protect against stale cached data. There is no fallback to secondhand cards to fill a category's Top 10.
+
+With this stricter requirement, a category may legitimately show fewer than ten current deals. A deal-article headline from a well-known publisher is not itself proof of an authorized reseller: always confirm the checkout merchant and final terms before purchasing.
+
 The `scripts/update_deals.py` job downloads public RSS headlines from Doctor of Credit's gift card deals feed and Slickdeals frontpage and popular-deals feeds. It attempts to parse **explicit** percentage-off discounts, ranges, or face-value / price pairs. It excludes obviously expired articles, rewards, cashback, and ambiguous offers, and only considers recently published posts. Unavailable feeds or no qualifying deals result in a clear status, **not fictional offers or a forced list of 10**.
 
 **Not a live price feed.** RSS headlines are not authoritative checkout data and can be outdated. Memberships, store locations, fees, codes, expiration, availability, taxes, and terms require direct verification. A displayed discount is a **reported estimate**, not a guarantee. If an article refers to multiple brands, its discount may not apply to all of them. Buyers should check the actual redemption and checkout terms.
