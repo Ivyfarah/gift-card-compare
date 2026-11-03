@@ -97,7 +97,7 @@
   <header class="hero">
     <div class="topline"><span class="mark">✦</span> GIFT CARD COMPARE <span style="margin-left:auto;font-size:11px">🇺🇸 美國版</span></div>
     <h1>買禮品卡，<br>先看看哪裡最划算。</h1>
-    <p>九大類別每天更新公開的禮品卡折扣，按最高可省百分比排列。每類最多 10 筆；不足十筆不會用沒有折扣的卡湊數。</p>
+    <p>只整理品牌與主要零售商的全新禮品卡優惠資訊，排除私人轉售與二手卡。九大類按折扣由高到低排序，沒有折扣的分類不會湊滿 Top 10。</p>
     <div class="stats">
       <div class="stat"><small>可顯示優惠</small><strong id="totalStat">—</strong></div>
       <div class="stat"><small>最高標示折扣</small><strong id="bestStat">—</strong></div>
@@ -127,8 +127,8 @@
   </div>
   <div class="toolbar"><span id="resultCount">準備載入…</span><button id="sort" class="sort" type="button">折扣最高 ↓</button></div>
   <div class="list" id="deals"><div class="empty"><div style="font-size:32px">🎁</div><b>正在整理今日優惠</b><p>如果折扣資料尚未產生，這裡會清楚顯示狀態。</p></div></div>
-  <p class="note"><b>折扣資訊說明：</b>CardCash 為二手／轉售禮品卡平台，顯示的是品牌頁面「最高可省」（Up to）折扣，不保證每一張面額都有相同折扣，面額、實際售價、庫存與交付方式須以結帳頁為準。Doctor of Credit / Slickdeals 為近期文章整理，優惠可能已失效。公開資料不是每筆交易的即時價格驗證。每類最多列前 10 筆，找不到就不捏造；推薦榜是另一個獨立頁籤，不算特價。購買前請核對卡片餘額、有效性、限制、手續費和退款保障。本站不代購。</p>
-  <div class="sources"><a href="https://www.cardcash.com/buy-gift-cards/" target="_blank" rel="noopener noreferrer">CardCash ↗</a><a href="https://www.doctorofcredit.com/category/gift-card-deals/" target="_blank" rel="noopener noreferrer">Doctor of Credit ↗</a><a href="https://slickdeals.net/" target="_blank" rel="noopener noreferrer">Slickdeals ↗</a></div>
+  <p class="note"><b>優惠來源說明：</b>只保留與品牌／主要零售商相關的公開促銷文章，已排除 CardCash、私人轉售、二手卡及已知轉售平台。公開文章不等於商家已核實的即時報價；購買前仍需確認發卡方、授權銷售商、有效期限、實際折扣、面額、付款限制與最終結帳金額。缺乏足夠優惠的分類會顯示實際筆數，不以二手卡或虛構折扣補足。本網站不代購。</p>
+  <div class="sources"><a href="https://www.doctorofcredit.com/category/gift-card-deals/" target="_blank" rel="noopener noreferrer">Doctor of Credit ↗</a><a href="https://slickdeals.net/" target="_blank" rel="noopener noreferrer">Slickdeals ↗</a></div>
 </div>
 <nav class="nav" aria-label="主選單"><div class="nav-inner"><button type="button" id="homeBtn" class="active"><i>⌂</i>優惠排行榜</button><button type="button" id="favBtn"><i>♡</i>我的收藏</button><button type="button" id="infoBtn"><i>ⓘ</i>使用說明</button></div></nav>
 <script>
@@ -250,22 +250,22 @@ function setMode(next){
   updateControls();render();
 }
 function render(){
-  var all=Array.isArray(data.deals)?data.deals.filter(function(d){return d&&typeof d.discount_pct==='number'&&d.discount_pct>0&&safeUrl(d.url)}):[];
+  var all=Array.isArray(data.deals)?data.deals.filter(function(d){return d&&d.source_kind==='deal_article'&&typeof d.discount_pct==='number'&&d.discount_pct>0&&safeUrl(d.url)&&!/(cardcash|cardpool|cardcookie|giftcardgranny|raise\.com|gcx\.app|gameflip|clipkard|giftcardspread|giftcardoutlets|cardswap|giftcardexchange|resale|resold|second.hand|pre.owned)/i.test([d.brand,d.title,d.source,d.url].join(' '))}):[];
   var best=all.reduce(function(n,d){return Math.max(n,d.discount_pct)},0);
   set('totalStat',String(all.length));set('bestStat',best?best.toFixed(1)+'%':'—');set('timeStat',time(data.generated_at));
   var fresh=data.generated_at&&ageDays(data.generated_at)<1.6;
   el('statusDot').className='dot '+(fresh&&data.status==='ok'?'good':data.status==='unavailable'?'bad':'');
   set('statusTitle',!data.generated_at?'尚未產生每日資料':!fresh?'資料可能已過期':data.status==='partial'?'部分來源暫時無法更新':data.status==='unavailable'?'資料來源暫時不可用':'每日優惠資料已載入');
-  set('statusText',!data.generated_at?'尚未有每日更新結果。':'最後抓取：'+time(data.generated_at)+'（美西）。'+(data.cardcash_pages_ok||0)+' 個 CardCash 分類頁已讀取，實際折扣和庫存以來源結帳為準。');
+  set('statusText',!data.generated_at?'尚未有每日更新結果。':'最後抓取：'+time(data.generated_at)+'（美西）。已排除私人／二手轉售平台；所有折扣請在官方或零售商結帳頁確認。');
   if(mode==='picks'){renderPicks(all);return}
   el('deals').className='list';
   el('sort').hidden=false;
-  set('rankNote','CardCash 最高可省% + 近期優惠文章 · 實際結帳價可能不同');
+  set('rankNote','僅顯示主要零售商／品牌相關優惠文章 · 須向商家核實');
   var term=query.trim().toLowerCase();
   if(filter==='all'&&!term){
     el('sort').hidden=true;
     set('heading','九大類優惠 Top 10');
-    set('resultCount','共 '+all.length+' 筆公開優惠 · 點分類查看折扣排名');
+    set('resultCount','符合條件 '+all.length+' 筆公開優惠 · 排除所有二手／私人轉售卡');
     var over=el('deals');over.replaceChildren();over.className='overview-grid';
     (catalog.categories||[]).forEach(function(c){
       var catDeals=all.filter(function(d){return d.category===c.id})
@@ -275,11 +275,11 @@ function render(){
       head.appendChild(txt('span',c.icon+' '+c.label));
       head.appendChild(txt('span',catDeals.length+'/10 筆','count'));
       button.appendChild(head);
-      button.appendChild(txt('div',catDeals.length?'目前最高標示 '+catDeals[0].discount_pct.toFixed(1)+'%（非保證成交價）':'尚無可列出的近期折扣','overview-note'));
+      button.appendChild(txt('div',catDeals.length?'目前最高報導折扣 '+catDeals[0].discount_pct.toFixed(1)+'%（請核實）':'暫無符合條件的全新禮品卡優惠','overview-note'));
       var preview=txt('div','', 'overview-preview');
       if(!catDeals.length)preview.appendChild(txt('div','暫無資料，可查看原始來源或其他分類'));
       catDeals.slice(0,3).forEach(function(d,i){
-        preview.appendChild(txt('div',(i+1)+'. '+d.brand+' — '+(d.deal_type==='up_to'?'最高 ':'')+d.discount_pct.toFixed(1)+'%'));
+        preview.appendChild(txt('div',(i+1)+'. '+d.brand+' — '+d.discount_pct.toFixed(1)+'%'));
       });
       button.appendChild(preview);
       button.appendChild(txt('div','查看此類折扣 Top 10 →','overview-open'));
@@ -317,16 +317,16 @@ function render(){
     save.type='button';save.setAttribute('aria-label','收藏或取消收藏');save.onclick=function(){favorites=favorites.includes(d.id)?favorites.filter(function(x){return x!==d.id}):favorites.concat(d.id);try{localStorage.setItem('gcc-favorites',JSON.stringify(favorites))}catch(e){}render()};
     topRow.appendChild(save);card.appendChild(topRow);
     var mid=txt('div','', 'deal-middle');
-    var percent=txt('div',(d.deal_type==='up_to'?'最高 ':'')+d.discount_pct.toFixed(1)+'%','percent');
-    mid.appendChild(percent);mid.appendChild(txt('span',d.deal_type==='up_to'?'最高可省 · 轉售卡':d.deal_type==='bonus'?'贈卡等值估算':d.deal_type==='range'?'折扣下限':'文章標示折扣','dealtype'));
+    var percent=txt('div',d.discount_pct.toFixed(1)+'%','percent');
+    mid.appendChild(percent);mid.appendChild(txt('span',d.deal_type==='range'?'折扣下限':'公開文章標示折扣','dealtype'));
     if(d.face_value&&d.price){mid.appendChild(txt('div','$'+d.face_value+' 面額\n售價 $'+d.price,'price'))}
     card.appendChild(mid);card.appendChild(txt('p',d.title,'deal-title'));
-    var tags=txt('div','', 'tags');tags.appendChild(txt('span',d.source_kind==='resale_listing'?'二手／轉售卡 · 售價與面額須確認':'公開文章 · 未核實是否仍有效','tag'));
+    var tags=txt('div','', 'tags');tags.appendChild(txt('span','非轉售平台 · 尚需向商家核實','tag'));
     if(d.restricted)tags.appendChild(txt('span','可能有會員／指定帳號限制','tag'));
     if(d.deal_type==='bonus')tags.appendChild(txt('span','贈卡 ≠ 現金折扣','tag'));
     card.appendChild(tags);
-    var bottom=txt('div','', 'deal-bottom');bottom.appendChild(txt('small',(d.source_kind==='resale_listing'?'頁面抓取 ':'文章發布 ')+prettyDate(d.published)));
-    var link=txt('a',d.source_kind==='resale_listing'?'查看卡片售價 ↗':'查看優惠來源 ↗','buy');link.href=safeUrl(d.url);link.target='_blank';link.rel='noopener noreferrer';bottom.appendChild(link);card.appendChild(bottom);box.appendChild(card)
+    var bottom=txt('div','', 'deal-bottom');bottom.appendChild(txt('small','文章發布 '+prettyDate(d.published)));
+    var link=txt('a','查看優惠來源 ↗','buy');link.href=safeUrl(d.url);link.target='_blank';link.rel='noopener noreferrer';bottom.appendChild(link);card.appendChild(bottom);box.appendChild(card)
   })
 }
 function load(){
@@ -353,7 +353,7 @@ el('sort').onclick=function(){sortDesc=!sortDesc;set('sort',sortDesc?'折扣最�
 el('refresh').onclick=load;
 el('homeBtn').onclick=function(){setMode('deals');setFilter('all');window.scrollTo({top:0,behavior:'smooth'})};
 el('favBtn').onclick=function(){setFilter('favorites');window.scrollTo({top:0,behavior:'smooth'})};
-el('infoBtn').onclick=function(){window.alert('折扣 Top 10：依來源標示的百分比高到低排列，最高可省不保證所有面額都買得到。CardCash 屬轉售禮品卡市場，請確認餘額、卡別、交付與保障。\n\n編輯精選榜與實際折扣榜分開。若沒有 10 張符合條件的折扣，只顯示實際找到的筆數。\n\nSafari 分享 → 加入主畫面；收藏只保存在本機。')};
+el('infoBtn').onclick=function(){window.alert('已排除 CardCash 等私人轉售、二手禮品卡來源。僅顯示公開文章報導的品牌／主要零售商相關促銷，購買前請確認商家授權、有效日期、價格與限制。\n\n如果某類不足十筆，只顯示實際找到的優惠。另有推薦榜但不等於當前特價。\n\nSafari 分享 → 加入主畫面；收藏只保存在本機。')};
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(function(){});
 updateControls();
 load();
