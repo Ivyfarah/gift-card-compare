@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "public" / "data" / "deals.json"
 NOW = dt.datetime.now(dt.timezone.utc)
 MAX_AGE_DAYS = 14
+MIN_DISCOUNT_PCT = 10.0  # Never display an offer below 10% savings.
 SOURCES = [
     ("Doctor of Credit", "https://www.doctorofcredit.com/category/gift-card-deals/feed/"),
     ("Slickdeals", "https://slickdeals.net/newsearch.php?mode=frontpage&searcharea=deals&searchin=first&rss=1"),
@@ -211,20 +212,20 @@ def extract_offer(title: str, description: str):
         if not (10 <= face <= 2000 and 0 < price < face):
             continue
         saving = (face - price) / face * 100
-        if saving < 2 or saving > 60:
+        if saving < MIN_DISCOUNT_PCT or saving > 60:
             continue
         return round(saving, 1), "price", round(face, 2), round(price, 2)
 
     range_match = PERCENT_RANGE.search(title)
     if range_match:
         low, high = map(float, range_match.groups())
-        if 2 <= low <= high <= 60:
+        if MIN_DISCOUNT_PCT <= low <= high <= 60:
             return low, "range", None, None
     # "save 10%" and "10% discount" explicit, but exclude "up to 10%"
     match = PERCENT.search(title) or SAVINGS.search(title)
     if match and not UP_TO.search(title):
         p = float(match.group(1))
-        if 2 <= p <= 60:
+        if MIN_DISCOUNT_PCT <= p <= 60:
             return p, "percentage", None, None
     return None
 
@@ -318,6 +319,7 @@ def main():
         "source_count": len(ok_sources),
         "configured_sources": len(SOURCES),
         "resale_excluded": True,
+        "min_discount_pct": MIN_DISCOUNT_PCT,
         "category_counts": counts,
         "disclaimer": "Secondary-market/consumer resale gift cards are excluded. This feed contains selected recent articles mentioning primary merchants or gift card issuers; publisher headlines do not confirm merchant authorization, inventory, or checkout price. Verify with the retailer.",
         "deals": output[:80],
