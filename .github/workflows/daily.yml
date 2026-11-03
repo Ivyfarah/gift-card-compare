@@ -25,6 +25,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Diagnose direct seller public pages (temporary)
+        run: python scripts/probe_direct.py
       - name: Refresh public offer headlines
         run: python scripts/update_deals.py
       - name: Prepare static site
